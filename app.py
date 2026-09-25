@@ -42,9 +42,6 @@ with st.sidebar:
         ]
     )
 
-    st.divider()
-    st.caption("Gaya Desain: Warm Cream & Navy (DataIn Style)")
-
 # ==============================================================================
 # 0. BERANDA: IKHTISAR ALGORITMA KRIPTOGRAFI
 # ==============================================================================
