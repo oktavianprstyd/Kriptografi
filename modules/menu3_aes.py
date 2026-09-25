@@ -7,22 +7,23 @@ except ImportError:
     from ui_helper import render_header, load_global_css
 
 # ==============================================================================
-# BAGIAN 1: LOGIKA ALGORITMA AES BLOCK CIPHER
+# BAGIAN 1: LOGIKA AES BLOCK CIPHER
 # Penanggung Jawab: Orang 3
 # ==============================================================================
 
 def aes_encrypt(plaintext: str, key: str, mode: str = "CBC"):
     """
-    TODO: Tuliskan logika enkripsi AES di sini (misal menggunakan library cryptography atau manual).
-    Input: Teks plainteks & string kunci
-    Kembalikan: dict berisi hex_str, b64_str, demo_trace, dll.
+    TODO: Tuliskan logika enkripsi AES di sini.
     """
-    # [PLACEHOLDER - Silakan ganti dengan kodinganmu]
     hex_str = f"4145535F454E435259505445445F{len(plaintext):02X}"
-    b64_str = "[PLACEHOLDER_BASE64]"
+    b64_str = "QUVTLUVOQ1JZUFRFRC1TQU1QTEU="
     demo_trace = {
-        "round": "Contoh State Matrix 4x4",
-        "data": [["00", "01", "02", "03"], ["04", "05", "06", "07"], ["08", "09", "0A", "0B"], ["0C", "0D", "0E", "0F"]]
+        "State Matrix": [
+            ["00", "04", "08", "0C"],
+            ["01", "05", "09", "0D"],
+            ["02", "06", "0A", "0E"],
+            ["03", "07", "0B", "0F"]
+        ]
     }
     return {
         "hex_str": hex_str,
@@ -30,84 +31,96 @@ def aes_encrypt(plaintext: str, key: str, mode: str = "CBC"):
         "demo_trace": demo_trace
     }
 
-def aes_decrypt(cipher_hex_or_bytes: str, key: str, mode: str = "CBC"):
+def aes_decrypt(cipher_hex: str, key: str, mode: str = "CBC"):
     """
     TODO: Tuliskan logika dekripsi AES di sini.
-    Kembalikan: plainteks hasil rekonstruksi
     """
-    # [PLACEHOLDER - Silakan ganti dengan kodinganmu]
-    return f"[HASIL DEKRIPSI AES dari {cipher_hex_or_bytes[:16]}...]"
+    return f"[HASIL DEKRIPSI AES dari {cipher_hex[:16]}...]"
 
 # ==============================================================================
-# BAGIAN 2: TAMPILAN DASHBOARD STREAMLIT
-# Penanggung Jawab: Orang 3
+# BAGIAN 2: TAMPILAN DASHBOARD STREAMLIT (GAYA DATAIN - BERSIH & RAPI)
 # ==============================================================================
 
 def render_aes_page():
     render_header(
-        title="3️⃣ AES-128 Block Cipher",
+        title="Menu 3: AES-128 Block Cipher",
         subtitle="Standar Enkripsi Blok Modern 128-bit dengan Mode CBC & State Matrix 4×4",
-        person_badge="Penanggung Jawab: Orang 3",
-        algo_badge="Kriptografi Modern",
-        badge_class="badge-p3"
+        pic_name="Penanggung Jawab: Orang 3",
+        category="Kriptografi Modern"
     )
 
-    tab_enc, tab_dec, tab_trace, tab_theory = st.tabs([
-        "🔒 Enkripsi", "🔓 Dekripsi", "🔍 Visualisasi State Matrix & Round", "📖 Teori & Rumus"
+    tab_main, tab_trace, tab_theory = st.tabs([
+        "Operasi Enkripsi & Dekripsi",
+        "Visualisasi State Matrix & Round",
+        "Teori & Formula"
     ])
 
-    with tab_enc:
-        c1, c2 = st.columns([1, 1])
-        with c1:
-            st.markdown("##### 📝 Input Teks & Kunci")
-            p_aes = st.text_area("Masukkan Plaintext:", value="BELAJAR KRIPTOGRAFI MODERN", height=120, key="aes_plain_in")
-            k_aes = st.text_input("Kunci Rahasia AES:", value="KunciSuperAman128", key="aes_key_in")
-            mode_opt = st.selectbox("Mode Operasi:", ["CBC (Cipher Block Chaining)", "ECB (Electronic Codebook)"], key="aes_mode_in")
-            btn_aes_enc = st.button("🔒 Enkripsi Sekarang", key="aes_btn_enc", use_container_width=True)
-        with c2:
-            st.markdown("##### 🎯 Hasil Enkripsi")
-            if btn_aes_enc:
-                aes_res = aes_encrypt(p_aes, k_aes, mode=mode_opt)
-                st.session_state["aes_trace"] = aes_res.get("demo_trace")
-                st.text_area("Ciphertext (Hex):", value=aes_res.get("hex_str", ""), height=80)
-                st.text_area("Ciphertext (Base64):", value=aes_res.get("b64_str", ""), height=60)
-                st.success("Enkripsi AES berhasil diproses!")
-            else:
-                st.info("Klik tombol 'Enkripsi Sekarang' untuk melihat hasil.")
+    with tab_main:
+        mode = st.radio(
+            "Pilih Mode Operasi",
+            ["Enkripsi Pesan", "Dekripsi Pesan"],
+            horizontal=True,
+            key="aes_mode"
+        )
+        st.divider()
 
-    with tab_dec:
-        c1, c2 = st.columns([1, 1])
-        with c1:
-            st.markdown("##### 📥 Input Ciphertext & Kunci")
-            c_aes_in = st.text_area("Masukkan Ciphertext (Hex):", value="", height=120, key="aes_dec_in")
-            k_aes_dec = st.text_input("Kunci Rahasia AES:", value="KunciSuperAman128", key="aes_key_dec")
-            btn_aes_dec = st.button("🔓 Dekripsi Sekarang", key="aes_btn_dec", use_container_width=True)
-        with c2:
-            st.markdown("##### 🎯 Hasil Dekripsi")
-            if btn_aes_dec:
-                d_res = aes_decrypt(c_aes_in, k_aes_dec)
-                st.text_area("Plaintext Rekonstruksi:", value=d_res, height=120)
-                st.success("Dekripsi AES berhasil diproses!")
-            else:
-                st.info("Klik tombol 'Dekripsi Sekarang' untuk melihat hasil.")
+        if mode == "Enkripsi Pesan":
+            col1, col2 = st.columns([1, 1])
+            with col1:
+                st.markdown("##### Input Plainteks & Parameter Kunci")
+                p_aes = st.text_area("Masukkan teks plainteks:", value="BELAJAR KRIPTOGRAFI MODERN", height=110, key="aes_plain_in")
+                k_aes = st.text_input("Kunci Rahasia AES (128-bit / Passphrase):", value="KunciSuperAman128", key="aes_key_in")
+                mode_opt = st.selectbox("Mode Operasi Blok:", ["CBC (Cipher Block Chaining)", "ECB (Electronic Codebook)"], key="aes_mode_in")
+                btn_aes_enc = st.button("Enkripsi Pesan", key="aes_btn_enc", use_container_width=True)
+            with col2:
+                st.markdown("##### Hasil Enkripsi")
+                if btn_aes_enc:
+                    aes_res = aes_encrypt(p_aes, k_aes, mode=mode_opt)
+                    st.session_state["aes_trace"] = aes_res.get("demo_trace")
+                    st.text_area("Cipherteks (Format Heksadesimal):", value=aes_res.get("hex_str", ""), height=80)
+                    st.text_area("Cipherteks (Format Base64):", value=aes_res.get("b64_str", ""), height=60)
+                    st.success("Proses enkripsi AES selesai diproses.")
+                else:
+                    st.info("Tekan tombol 'Enkripsi Pesan' untuk memproses teks.")
+
+        else:
+            col1, col2 = st.columns([1, 1])
+            with col1:
+                st.markdown("##### Input Cipherteks & Kunci")
+                c_aes_in = st.text_area("Masukkan teks cipherteks (Heksadesimal):", value="", height=110, key="aes_dec_in")
+                k_aes_dec = st.text_input("Kunci Rahasia AES:", value="KunciSuperAman128", key="aes_key_dec")
+                btn_aes_dec = st.button("Dekripsi Pesan", key="aes_btn_dec", use_container_width=True)
+            with col2:
+                st.markdown("##### Hasil Dekripsi")
+                if btn_aes_dec:
+                    d_res = aes_decrypt(c_aes_in, k_aes_dec)
+                    st.text_area("Teks Plainteks Rekonstruksi:", value=d_res, height=110)
+                    st.success("Proses dekripsi AES selesai diproses.")
+                else:
+                    st.info("Tekan tombol 'Dekripsi Pesan' untuk memproses teks.")
 
     with tab_trace:
-        st.markdown("#### 🧱 Transformasi State Matrix 4×4")
+        st.markdown("##### Transformasi State Matrix 4×4")
         if "aes_trace" in st.session_state and st.session_state["aes_trace"]:
-            t = st.session_state["aes_trace"]
-            st.write(t)
+            st.write(st.session_state["aes_trace"])
         else:
-            st.info("Lakukan enkripsi terlebih dahulu untuk melihat visualisasi State Matrix.")
+            st.info("Lakukan proses enkripsi terlebih dahulu untuk memuat visualisasi State Matrix.")
 
     with tab_theory:
+        st.markdown("##### Teori & Struktur AES (Advanced Encryption Standard)")
         st.markdown("""
-        ### 📖 Teori AES (Advanced Encryption Standard)
-        * **Kategori**: Cipher Blok Simetris (*Symmetric Block Cipher*).
-        * **Operasi Inti per Round**: *SubBytes*, *ShiftRows*, *MixColumns*, *AddRoundKey*.
+        **AES-128** adalah cipher blok simetris yang memproses data dalam blok tetap berukuran 128 bit (16 byte)
+        menggunakan struktur *Substitution-Permutation Network* (SPN) dalam 10 putaran (*rounds*).
+
+        **4 Tahapan Inti per Putaran:**
+        1. **SubBytes**: Substitusi non-linear per byte menggunakan tabel S-Box Rijndael.
+        2. **ShiftRows**: Pergeseran siklis pada baris-baris State Matrix.
+        3. **MixColumns**: Perkalian matriks setiap kolom dalam lapangan Galois $GF(2^8)$.
+        4. **AddRoundKey**: Operasi bitwise XOR antara State Matrix dengan kunci putaran (*Round Key*).
         """)
 
-# Standalone runner: Orang 3 bisa langsung menjalankan file ini saja
+# Standalone runner: Orang 3
 if __name__ == "__main__":
-    st.set_page_config(page_title="AES - Orang 3", page_icon="🔐", layout="wide")
+    st.set_page_config(page_title="AES-128 - Orang 3", layout="wide")
     load_global_css()
     render_aes_page()

@@ -6,77 +6,55 @@ try:
 except ImportError:
     from ui_helper import render_header, load_global_css
 
-# BAGIAN 1: LOGIKA CAESAR CIPHER
+# ==============================================================================
+# BAGIAN 1: LOGIKA CAESAR CIPHER (ORANG 1)
+# ==============================================================================
 
 def caesar_encrypt(plaintext: str, shift: int):
     """
-    Enkripsi Caesar Cipher.
-    Rumus:
-        C = (P + k) mod 26
-
-    Huruf besar tetap besar.
-    Huruf kecil tetap kecil.
-    Spasi, angka, dan simbol tidak berubah.
+    Enkripsi Caesar Cipher:
+    C = (P + k) mod 26
     """
-
     ciphertext = ""
     steps = []
-
     no = 1
 
     for char in plaintext:
-
-        # HURUF BESAR
         if char.isupper():
-
             old_pos = ord(char) - ord("A")
             new_pos = (old_pos + shift) % 26
             new_char = chr(new_pos + ord("A"))
-
             ciphertext += new_char
-
             steps.append({
                 "No": no,
                 "Karakter": char,
-                "Posisi": old_pos,
-                "Kalkulasi": f"({old_pos} + {shift}) mod 26",
-                "Hasil": new_char
+                "Posisi (0-25)": str(old_pos),
+                "Kalkulasi Modulo": f"({old_pos} + {shift}) mod 26",
+                "Hasil Sandi": new_char
             })
-
             no += 1
-
-        # HURUF KECIL
         elif char.islower():
-
             old_pos = ord(char) - ord("a")
             new_pos = (old_pos + shift) % 26
             new_char = chr(new_pos + ord("a"))
-
             ciphertext += new_char
-
             steps.append({
                 "No": no,
                 "Karakter": char,
-                "Posisi": old_pos,
-                "Kalkulasi": f"({old_pos} + {shift}) mod 26",
-                "Hasil": new_char
+                "Posisi (0-25)": str(old_pos),
+                "Kalkulasi Modulo": f"({old_pos} + {shift}) mod 26",
+                "Hasil Sandi": new_char
             })
-
             no += 1
-
-        # SPASI / ANGKA / SIMBOL
         else:
-
             ciphertext += char
-
             steps.append({
                 "No": no,
                 "Karakter": char,
-                "Posisi": "-",
-                "Kalkulasi": "Tidak diproses",
-                "Hasil": char
+                "Posisi (0-25)": "-",
+                "Kalkulasi Modulo": "Karakter tidak diubah",
+                "Hasil Sandi": char
             })
-
             no += 1
 
     return ciphertext, steps
@@ -84,69 +62,49 @@ def caesar_encrypt(plaintext: str, shift: int):
 
 def caesar_decrypt(ciphertext: str, shift: int):
     """
-    Dekripsi Caesar Cipher.
-    Rumus:
-        P = (C - k) mod 26
+    Dekripsi Caesar Cipher:
+    P = (C - k) mod 26
     """
-
     plaintext = ""
     steps = []
-
     no = 1
 
     for char in ciphertext:
-
-        # HURUF BESAR
         if char.isupper():
-
             old_pos = ord(char) - ord("A")
             new_pos = (old_pos - shift) % 26
             new_char = chr(new_pos + ord("A"))
-
             plaintext += new_char
-
             steps.append({
                 "No": no,
                 "Karakter": char,
-                "Posisi": old_pos,
-                "Kalkulasi": f"({old_pos} - {shift}) mod 26",
-                "Hasil": new_char
+                "Posisi (0-25)": str(old_pos),
+                "Kalkulasi Modulo": f"({old_pos} - {shift}) mod 26",
+                "Hasil Plain": new_char
             })
-
             no += 1
-
-        # HURUF KECIL
         elif char.islower():
-
             old_pos = ord(char) - ord("a")
             new_pos = (old_pos - shift) % 26
             new_char = chr(new_pos + ord("a"))
-
             plaintext += new_char
-
             steps.append({
                 "No": no,
                 "Karakter": char,
-                "Posisi": old_pos,
-                "Kalkulasi": f"({old_pos} - {shift}) mod 26",
-                "Hasil": new_char
+                "Posisi (0-25)": str(old_pos),
+                "Kalkulasi Modulo": f"({old_pos} - {shift}) mod 26",
+                "Hasil Plain": new_char
             })
-
             no += 1
-
-        # SPASI / ANGKA / SIMBOL
         else:
-
             plaintext += char
-
             steps.append({
                 "No": no,
                 "Karakter": char,
-                "Posisi": "-",
-                "Kalkulasi": "Tidak diproses",
-                "Hasil": char
+                "Posisi (0-25)": "-",
+                "Kalkulasi Modulo": "Karakter tidak diubah",
+                "Hasil Plain": char
             })
-
             no += 1
 
     return plaintext, steps
@@ -154,304 +112,190 @@ def caesar_decrypt(ciphertext: str, shift: int):
 
 def caesar_bruteforce(ciphertext: str):
     """
-    Mencoba seluruh kemungkinan shift Caesar Cipher.
+    Mencoba seluruh 25 kemungkinan shift untuk kriptanalisis.
     """
-
     results = []
-
     for shift in range(1, 26):
-
-        plaintext, _ = caesar_decrypt(
-            ciphertext,
-            shift
-        )
-
+        plaintext, _ = caesar_decrypt(ciphertext, shift)
         results.append({
-            "Shift": shift,
-            "Hasil Dekripsi": plaintext
+            "Kunci Shift (k)": shift,
+            "Hasil Dekripsi Plainteks": plaintext
         })
-
     return results
 
-# BAGIAN 2: DASHBOARD STREAMLIT
-def render_caesar_page():
+# ==============================================================================
+# BAGIAN 2: TAMPILAN DASHBOARD STREAMLIT (GAYA DATAIN - BERSIH & RAPI)
+# ==============================================================================
 
+def render_caesar_page():
     render_header(
-        title="1️⃣ Caesar Cipher",
-        subtitle="Substitusi Monoalfabetik dengan Pergeseran Huruf Modulo 26",
-        person_badge="Penanggung Jawab: Orang 1",
-        algo_badge="Kriptografi Klasik",
-        badge_class="badge-p1"
+        title="Menu 1: Caesar Cipher",
+        subtitle="Substitusi Monoalfabetik dengan Pergeseran Abjad Modulo 26",
+        pic_name="Penanggung Jawab: Orang 1",
+        category="Kriptografi Klasik"
     )
 
-    # TABS
     tab_main, tab_trace, tab_crypto, tab_theory = st.tabs([
-        "🔐 Caesar Cipher",
-        "🔍 Step-by-Step",
-        "⚡ Brute-Force",
-        "📖 Teori & Rumus"
+        "Operasi Enkripsi & Dekripsi",
+        "Pelacakan Proses (Step-by-Step)",
+        "Kriptanalisis Brute-Force",
+        "Teori & Formula"
     ])
 
-    # TAB UTAMA
     with tab_main:
-
-        st.markdown("##### 🔐 Caesar Cipher")
-
-        # Pilihan Enkripsi / Dekripsi
         mode = st.radio(
-            "Pilih Mode",
-            ["🔒 Enkripsi", "🔓 Dekripsi"],
-            horizontal=True
+            "Pilih Mode Operasi",
+            ["Enkripsi Pesan", "Dekripsi Pesan"],
+            horizontal=True,
+            key="c_mode"
         )
-
         st.divider()
 
-        # ----------------------------------------------------------------------
-        # ENKRIPSI
-        # ----------------------------------------------------------------------
-
-        if mode == "🔒 Enkripsi":
-
+        if mode == "Enkripsi Pesan":
             col1, col2 = st.columns([1, 1])
-
             with col1:
-
-                st.markdown("##### 📝 Input Plaintext")
-
+                st.markdown("##### Input Plainteks")
                 plaintext = st.text_area(
-                    "Masukkan plaintext",
+                    "Masukkan teks yang akan dienkripsi:",
                     value="Belajar Kriptografi",
-                    height=100,
+                    height=110,
                     key="plaintext_input"
                 )
-
                 shift = st.slider(
-                    "Kunci Pergeseran (Shift)",
+                    "Kunci Pergeseran (Shift k):",
                     min_value=1,
                     max_value=25,
                     value=3,
                     key="encrypt_shift"
                 )
-
                 encrypt_button = st.button(
-                    "🔒 Enkripsi",
+                    "Enkripsi Pesan",
                     use_container_width=True,
                     key="encrypt_button"
                 )
 
             with col2:
-
                 st.markdown("##### Hasil Enkripsi")
-
                 if encrypt_button:
-
                     if plaintext.strip() == "":
-                        st.warning("Masukkan plaintext terlebih dahulu.")
-
+                        st.warning("Silakan masukkan teks plainteks terlebih dahulu.")
                     else:
-
-                        ciphertext, steps = caesar_encrypt(
-                            plaintext,
-                            shift
-                        )
-
-                        # Simpan hasil ke session
+                        ciphertext, steps = caesar_encrypt(plaintext, shift)
                         st.session_state["steps"] = steps
                         st.session_state["last_result"] = ciphertext
-
                         st.text_area(
-                            "Ciphertext",
+                            "Teks Cipherteks:",
                             value=ciphertext,
-                            height=100,
+                            height=110,
                             key="encrypt_result"
                         )
-
-                        st.success("Enkripsi berhasil!")
-
+                        st.success("Proses enkripsi berhasil diselesaikan.")
                 else:
+                    st.info("Tekan tombol 'Enkripsi Pesan' untuk memproses teks.")
 
-                    st.info(
-                        "Masukkan plaintext dan klik tombol Enkripsi."
-                    )
-
-        # DEKRIPSI
         else:
-
             col1, col2 = st.columns([1, 1])
-
             with col1:
-
-                st.markdown("##### 📥 Input Ciphertext")
-
+                st.markdown("##### Input Cipherteks")
                 ciphertext = st.text_area(
-                    "Masukkan ciphertext",
+                    "Masukkan teks cipherteks yang akan didekripsi:",
                     value="",
-                    height=100,
+                    height=110,
                     key="ciphertext_input"
                 )
-
                 shift = st.slider(
-                    "Kunci Pergeseran (Shift)",
+                    "Kunci Pergeseran (Shift k):",
                     min_value=1,
                     max_value=25,
                     value=3,
                     key="decrypt_shift"
                 )
-
                 decrypt_button = st.button(
-                    "🔓 Dekripsi",
+                    "Dekripsi Pesan",
                     use_container_width=True,
                     key="decrypt_button"
                 )
 
             with col2:
-
-                st.markdown("##### 🎯 Hasil Dekripsi")
-
+                st.markdown("##### Hasil Dekripsi")
                 if decrypt_button:
-
                     if ciphertext.strip() == "":
-                        st.warning("Masukkan ciphertext terlebih dahulu.")
-
+                        st.warning("Silakan masukkan teks cipherteks terlebih dahulu.")
                     else:
-
-                        plaintext, steps = caesar_decrypt(
-                            ciphertext,
-                            shift
-                        )
-
-                        # Simpan hasil
+                        plaintext, steps = caesar_decrypt(ciphertext, shift)
                         st.session_state["steps"] = steps
                         st.session_state["last_result"] = plaintext
-
                         st.text_area(
-                            "Plaintext",
+                            "Teks Plainteks Rekonstruksi:",
                             value=plaintext,
-                            height=100,
+                            height=110,
                             key="decrypt_result"
                         )
-
-                        st.success("Dekripsi berhasil!")
-
+                        st.success("Proses dekripsi berhasil diselesaikan.")
                 else:
+                    st.info("Tekan tombol 'Dekripsi Pesan' untuk memproses teks.")
 
-                    st.info(
-                        "Masukkan ciphertext dan klik tombol Dekripsi."
-                    )
-
-
-    # TAB STEP-BY-STEP
     with tab_trace:
-
-        st.markdown("##### 🔍 Pelacakan Proses Caesar Cipher")
-
-        if "steps" in st.session_state:
-
+        st.markdown("##### Pelacakan Transformasi Karakter demi Karakter")
+        if "steps" in st.session_state and st.session_state["steps"]:
             st.dataframe(
-                pd.DataFrame(
-                    st.session_state["steps"]
-                ),
+                pd.DataFrame(st.session_state["steps"]),
                 use_container_width=True,
                 hide_index=True
             )
-
         else:
+            st.info("Lakukan proses enkripsi atau dekripsi terlebih dahulu untuk memuat tabel langkah.")
 
-            st.info(
-                "Lakukan enkripsi atau dekripsi terlebih dahulu "
-                "untuk melihat prosesnya."
-            )
-
-    # TAB BRUTE FORCE
     with tab_crypto:
-
-        st.markdown("##### ⚡ Kriptanalisis Brute-Force")
-
-        st.caption(
-            "Mencoba seluruh kemungkinan shift untuk menemukan plaintext."
-        )
-
+        st.markdown("##### Analisis Kunci: Brute-Force 25 Shift")
+        st.caption("Mencoba seluruh kemungkinan nilai pergeseran abjad dari k = 1 hingga k = 25.")
         target = st.text_area(
-            "Masukkan Ciphertext",
+            "Masukkan Cipherteks Target:",
             value="KHOOR ZRUOG",
-            height=80,
+            height=90,
             key="bruteforce_input"
         )
-
         brute_button = st.button(
-            "🚀 Jalankan Brute-Force",
+            "Jalankan Analisis Brute-Force",
             use_container_width=True,
             key="brute_button"
         )
 
         if brute_button:
-
             if target.strip() == "":
-                st.warning("Masukkan ciphertext terlebih dahulu.")
-
+                st.warning("Silakan masukkan cipherteks target terlebih dahulu.")
             else:
-
                 results = caesar_bruteforce(target)
-
                 st.dataframe(
                     pd.DataFrame(results),
                     use_container_width=True,
                     hide_index=True
                 )
 
-    # TAB TEORI
     with tab_theory:
-
-        st.markdown("##### 📖 Teori Caesar Cipher")
-
+        st.markdown("##### Teori & Formula Caesar Cipher")
         st.markdown("""
-        **Caesar Cipher** merupakan algoritma kriptografi klasik
-        yang menggunakan metode substitusi dengan menggeser posisi
-        setiap huruf dalam alfabet.
+        **Caesar Cipher** adalah algoritma kriptografi klasik bertipe substitusi abjad-tunggal (*monoalphabetic substitution*).
+        Setiap huruf pada teks terang (*plaintext*) digantikan oleh huruf lain dengan selisih pergeseran posisi tetap sebesar $k$.
 
-        **Enkripsi:**
+        * **Formula Enkripsi**:
+          $$C_i = (P_i + k) \\pmod{26}$$
 
-        $$C_i = (P_i + k) \\mod 26$$
+        * **Formula Dekripsi**:
+          $$P_i = (C_i - k) \\pmod{26}$$
 
-        **Dekripsi:**
-
-        $$P_i = (C_i - k) \\mod 26$$
-
-        **Keterangan:**
-
-        - **P** = Plaintext
-        - **C** = Ciphertext
-        - **k** = nilai shift/kunci
-        - **26** = jumlah huruf alfabet
-
-        **Contoh dengan k = 3:**
-
-        `A → D`
-
-        `B → E`
-
-        `C → F`
-
-        `X → A`
-
-        `Y → B`
-
-        `Z → C`
-
-        Huruf besar dan kecil dipertahankan, sedangkan spasi,
-        angka, dan simbol tidak mengalami perubahan.
+        **Keterangan Notasi:**
+        * $P_i$ = Indeks posisi huruf plainteks ($A=0, B=1, \\dots, Z=25$)
+        * $C_i$ = Indeks posisi huruf cipherteks
+        * $k$ = Nilai kunci pergeseran (*shift key*)
+        * $26$ = Jumlah total abjad alfabet standar
         """)
 
-# RUN APPLICATION
-
+# Standalone runner: Orang 1 bisa menjalankan file ini saja
 if __name__ == "__main__":
-
     st.set_page_config(
-        page_title="Caesar Cipher",
-        page_icon="🔐",
+        page_title="Caesar Cipher - Orang 1",
         layout="wide"
     )
-
     load_global_css()
-
     render_caesar_page()
