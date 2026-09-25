@@ -189,7 +189,7 @@ elif menu == "Informasi Tim & Kontributor":
         st.session_state["member_3_name"] = "Mahasiswa 3"
         st.session_state["member_3_nim"] = "123220003"
     if "member_4_name" not in st.session_state:
-        st.session_state["member_4_name"] = "Grace"
+        st.session_state["member_4_name"] = "Oktavian Prasetya Adi"
         st.session_state["member_4_nim"] = "123220004"
     if "team_class" not in st.session_state:
         st.session_state["team_class"] = "Informatika - Kelas H"
