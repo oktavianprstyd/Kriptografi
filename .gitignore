@@ -47,11 +47,13 @@ venv.bak/
 Thumbs.db
 Desktop.ini
 
-# File materi perkuliahan & media sementara
+# Materi perkuliahan & media referensi
+materi_kuliah/
 *.pptx
 *.pdf
 WhatsApp Image*
 
-# File Pengujian Lokal / Eksperimental
+# Arsip lokal & file pengujian eksperimental
+archive/
 crypto/
 test_crypto.py
