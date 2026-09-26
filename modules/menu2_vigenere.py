@@ -13,24 +13,73 @@ except ImportError:
 
 def vigenere_encrypt(plaintext: str, key: str):
     """
-    TODO: Tuliskan logika enkripsi Vigenère Cipher di sini.
+    Melakukan enkripsi Vigenère Cipher.
     Rumus: C_i = (P_i + K_i) mod 26
     Kembalikan: (ciphertext, steps)
     """
-    ciphertext = f"[HASIL ENKRIPSI VIGENERE: {plaintext} (Kunci: {key})]"
-    steps = [
-        {"No": 1, "Plainteks": "P", "Kunci": "K", "Rumus": "(P + K) mod 26", "Hasil Sandi": "C"}
-    ]
+    # Bersihkan input: hanya huruf alfabet, uppercase
+    plaintext_clean = ''.join(ch for ch in plaintext.upper() if ch.isalpha())
+    key_clean = ''.join(ch for ch in key.upper() if ch.isalpha())
+
+    if not key_clean:
+        raise ValueError("Kunci harus berisi minimal satu huruf alfabet.")
+
+    ciphertext = ""
+    steps = []
+
+    for i, p_char in enumerate(plaintext_clean):
+        k_char = key_clean[i % len(key_clean)]
+        p_val = ord(p_char) - ord('A')
+        k_val = ord(k_char) - ord('A')
+        c_val = (p_val + k_val) % 26
+        c_char = chr(c_val + ord('A'))
+        ciphertext += c_char
+
+        steps.append({
+            "No": i + 1,
+            "Plainteks": p_char,
+            "Kunci": k_char,
+            "P (angka)": p_val,
+            "K (angka)": k_val,
+            "Rumus": f"({p_val} + {k_val}) mod 26 = {c_val}",
+            "Hasil Sandi": c_char
+        })
+
     return ciphertext, steps
 
 def vigenere_decrypt(ciphertext: str, key: str):
     """
-    TODO: Tuliskan logika dekripsi Vigenère Cipher di sini.
+    Melakukan dekripsi Vigenère Cipher.
     Rumus: P_i = (C_i - K_i + 26) mod 26
     Kembalikan: (plaintext, steps)
     """
-    plaintext = f"[HASIL DEKRIPSI VIGENERE: {ciphertext} (Kunci: {key})]"
+    ciphertext_clean = ''.join(ch for ch in ciphertext.upper() if ch.isalpha())
+    key_clean = ''.join(ch for ch in key.upper() if ch.isalpha())
+
+    if not key_clean:
+        raise ValueError("Kunci harus berisi minimal satu huruf alfabet.")
+
+    plaintext = ""
     steps = []
+
+    for i, c_char in enumerate(ciphertext_clean):
+        k_char = key_clean[i % len(key_clean)]
+        c_val = ord(c_char) - ord('A')
+        k_val = ord(k_char) - ord('A')
+        p_val = (c_val - k_val + 26) % 26
+        p_char = chr(p_val + ord('A'))
+        plaintext += p_char
+
+        steps.append({
+            "No": i + 1,
+            "Cipherteks": c_char,
+            "Kunci": k_char,
+            "C (angka)": c_val,
+            "K (angka)": k_val,
+            "Rumus": f"({c_val} - {k_val} + 26) mod 26 = {p_val}",
+            "Hasil Plainteks": p_char
+        })
+    
     return plaintext, steps
 
 def get_tabula_recta():
