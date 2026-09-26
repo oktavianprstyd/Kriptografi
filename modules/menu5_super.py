@@ -152,18 +152,18 @@ def render_super_page():
         st.markdown("##### Konsep Super Enkripsi Terpadu")
         st.markdown("""
         **Super Enkripsi** menggabungkan beberapa algoritma kriptografi secara beruntun (*pipelining*).
-        Output dari algoritma pertama menjadi input bagi algoritma berikutnya:
+        Secara matematis, ini membentuk sebuah **Fungsi Komposisi**:
 
-        $$\\text{Plainteks} \\xrightarrow{\\text{Tahap 1: Caesar}} C_1 \\xrightarrow{\\text{Tahap 2: Vigenère}} C_2 \\xrightarrow{\\text{Tahap 3: AES-128}} C_3 \\xrightarrow{\\text{Tahap 4: Vernam}} \\text{Final Super Cipherteks}$$
+        $$E_{super}(P) = E_{vernam}(E_{aes}(E_{vig}(E_{caesar}(P))))$$
 
         * **Kombinasi Algoritma:**
-          1. **Tahap 1 (Caesar Cipher):** Kriptografi Klasik Substitusi Monoalfabetik.
-          2. **Tahap 2 (Vigenère Cipher):** Kriptografi Klasik Substitusi Polialfabetik.
-          3. **Tahap 3 (AES-128 Rijndael):** Kriptografi Modern Cipher Blok Simetris 10 Putaran SPN.
-          4. **Tahap 4 (Vernam Stream Cipher):** Kriptografi Modern Cipher Aliran Bitwise XOR Keystream.
+          1. **Tahap 1 (Caesar Cipher):** Kriptografi Klasik (Aritmetika Modulo 26).
+          2. **Tahap 2 (Vigenère Cipher):** Kriptografi Klasik (Substitusi Polialfabetik).
+          3. **Tahap 3 (AES-128 Rijndael):** Kriptografi Modern (Matriks Galois Field $GF(2^8)$).
+          4. **Tahap 4 (Vernam Stream Cipher):** Kriptografi Modern (Aljabar Boolean/Bitwise XOR).
 
-        * **Prinsip Dekripsi (LIFO - Last In First Out)**:
-          Proses pembalikan dilakukan dengan urutan terbalik secara presisi:
+        * **Prinsip Dekripsi (LIFO - Teorema Invers)**:
+          Berdasarkan aturan invers fungsi komposisi $(f \circ g)^{-1} = g^{-1} \circ f^{-1}$, proses pembalikan harus dilakukan dengan urutan terbalik secara presisi:
           $$\\text{Super Cipherteks} \\xrightarrow{\\text{Vernam}^{-1}} C_3 \\xrightarrow{\\text{AES}^{-1}} C_2 \\xrightarrow{\\text{Vigenère}^{-1}} C_1 \\xrightarrow{\\text{Caesar}^{-1}} \\text{Plainteks}$$
         """)
 
