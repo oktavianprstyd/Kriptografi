@@ -187,7 +187,7 @@ def vernam_bit_simulation(plain_bits: str, key_bits: str):
 
 def render_vernam_page():
     render_header(
-        title="Menu 4: Vernam Stream Cipher",
+        title="Menu 3: Vernam Stream Cipher",
         subtitle="Kriptografi Modern Cipher Aliran (Stream Cipher) Berbasis Bitwise XOR (⊕) dan One-Time Pad",
         pic_name="Penanggung Jawab: Orang 4 (Oktavian Prasetya Adi)",
         category="Kriptografi Modern - Cipher Aliran"

@@ -250,10 +250,10 @@ def aes_decrypt(cipher_hex: str, key: str, mode: str = "CBC"):
 
 def render_aes_page():
     render_header(
-        title="Menu 3: AES-128 Block Cipher",
+        title="Menu 4: AES-128 Block Cipher",
         subtitle="Standar Enkripsi Blok 128-bit (Implementasi Operasi Matriks Murni dengan NumPy)",
         pic_name="Penanggung Jawab: Orang 3",
-        category="Kriptografi Modern - Aljabar Linier"
+        category="Kriptografi Modern - Cipher Blok"
     )
 
     tab_main, tab_trace, tab_theory = st.tabs([

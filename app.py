@@ -35,8 +35,8 @@ with st.sidebar:
             "Beranda: Ikhtisar Algoritma",
             "Menu 1: Caesar Cipher",
             "Menu 2: Vigenère Cipher",
-            "Menu 3: AES-128 Block Cipher",
-            "Menu 4: Vernam Stream Cipher",
+            "Menu 3: Vernam Stream Cipher",
+            "Menu 4: AES-128 Block Cipher",
             "Menu 5: Super Enkripsi",
             "Informasi Tim & Kontributor"
         ]
@@ -74,14 +74,14 @@ if menu == "Beranda: Ikhtisar Algoritma":
         st.markdown("""
         <div class="datain-card">
             <span class="badge-category">Kriptografi Modern</span>
-            <span class="badge-pic">Cipher Blok Simetris</span>
-            <h4 style="margin-top: 8px; color: #1E3A5F; font-family: 'Outfit';">3. AES-128 (Rijndael)</h4>
+            <span class="badge-pic">Cipher Aliran (Stream Cipher)</span>
+            <h4 style="margin-top: 8px; color: #1E3A5F; font-family: 'Outfit';">3. Vernam Stream Cipher</h4>
             <p style="color: #4A709C; font-size: 0.92rem; line-height: 1.6; margin-bottom: 8px;">
-                Standar enkripsi blok simetris internasional (FIPS 197). Memproses blok data 128 bit 
-                dalam 10 putaran berbasis <i>Substitution-Permutation Network</i> (SPN) dan mode operasi CBC.
+                Algoritma cipher aliran modern berbasis operasi bitwise XOR (⊕) bit-per-bit dengan aliran bit kunci (keystream). 
+                Mengadopsi konsep One-Time Pad (OTP) yang memberikan keamanan sempurna (unbreakable).
             </p>
             <div style="background: #FAF6F0; padding: 8px 12px; border-radius: 6px; border: 1px solid #D8CFC4; font-family: 'JetBrains Mono'; font-size: 0.85rem; color: #002D80;">
-                Putaran: SubBytes → ShiftRows → MixColumns → AddRoundKey
+                Formula: C_i = P_i ⊕ K_i | P_i = C_i ⊕ K_i (Involutori)
             </div>
         </div>
         """, unsafe_allow_html=True)
@@ -105,14 +105,14 @@ if menu == "Beranda: Ikhtisar Algoritma":
         st.markdown("""
         <div class="datain-card">
             <span class="badge-category">Kriptografi Modern</span>
-            <span class="badge-pic">Cipher Aliran (Stream Cipher)</span>
-            <h4 style="margin-top: 8px; color: #1E3A5F; font-family: 'Outfit';">4. Vernam Stream Cipher</h4>
+            <span class="badge-pic">Cipher Blok Simetris</span>
+            <h4 style="margin-top: 8px; color: #1E3A5F; font-family: 'Outfit';">4. AES-128 (Rijndael)</h4>
             <p style="color: #4A709C; font-size: 0.92rem; line-height: 1.6; margin-bottom: 8px;">
-                Algoritma cipher aliran modern berbasis operasi bitwise XOR (⊕) bit-per-bit dengan aliran bit kunci (keystream). 
-                Mengadopsi konsep One-Time Pad (OTP) yang memberikan keamanan sempurna (unbreakable).
+                Standar enkripsi blok simetris internasional (FIPS 197). Memproses blok data 128 bit 
+                dalam 10 putaran berbasis <i>Substitution-Permutation Network</i> (SPN) dan mode operasi CBC.
             </p>
             <div style="background: #FAF6F0; padding: 8px 12px; border-radius: 6px; border: 1px solid #D8CFC4; font-family: 'JetBrains Mono'; font-size: 0.85rem; color: #002D80;">
-                Formula: C_i = P_i ⊕ K_i | P_i = C_i ⊕ K_i (Involutori)
+                Putaran: SubBytes → ShiftRows → MixColumns → AddRoundKey
             </div>
         </div>
         """, unsafe_allow_html=True)
@@ -124,14 +124,14 @@ if menu == "Beranda: Ikhtisar Algoritma":
     st.markdown("""
     <div class="datain-card">
         <p style="color: #1E3A5F; font-size: 0.95rem; line-height: 1.6; margin-bottom: 12px;">
-            <b>Super Enkripsi</b> mengombinasikan kekuatan algoritma substitusi klasik dengan standar cipher blok dan cipher aliran modern. 
+            <b>Super Enkripsi</b> mengombinasikan kekuatan algoritma substitusi klasik dengan standar cipher aliran dan cipher blok modern. 
             Output sandi dari setiap stasiun menjadi input bagi stasiun berikutnya:
         </p>
         <div style="background: #FAF6F0; border: 1px solid #D8CFC4; border-radius: 8px; padding: 14px; text-align: center; font-family: 'Outfit'; font-weight: 600; color: #002D80; margin-bottom: 12px;">
-            Plainteks &nbsp; ➔ &nbsp; [Tahap 1: Caesar] &nbsp; ➔ &nbsp; [Tahap 2: Vigenère] &nbsp; ➔ &nbsp; [Tahap 3: AES-128] &nbsp; ➔ &nbsp; [Tahap 4: Vernam] &nbsp; ➔ &nbsp; Super Cipherteks
+            Plainteks &nbsp; ➔ &nbsp; [Tahap 1: Caesar] &nbsp; ➔ &nbsp; [Tahap 2: Vigenère] &nbsp; ➔ &nbsp; [Tahap 3: Vernam] &nbsp; ➔ &nbsp; [Tahap 4: AES-128] &nbsp; ➔ &nbsp; Super Cipherteks
         </div>
         <p style="color: #4A709C; font-size: 0.88rem; margin: 0;">
-            <b>Proses Dekripsi (Prinsip LIFO):</b> Dilakukan dengan urutan terbalik secara presisi: Vernam Dekripsi ➔ AES Dekripsi ➔ Vigenère Dekripsi ➔ Caesar Dekripsi ➔ Plainteks Asli.
+            <b>Proses Dekripsi (Prinsip LIFO):</b> Dilakukan dengan urutan terbalik secara presisi: AES Dekripsi ➔ Vernam Dekripsi ➔ Vigenère Dekripsi ➔ Caesar Dekripsi ➔ Plainteks Asli.
         </p>
     </div>
     """, unsafe_allow_html=True)
@@ -141,8 +141,8 @@ if menu == "Beranda: Ikhtisar Algoritma":
     comp_df = pd.DataFrame([
         {"Algoritma": "Caesar Cipher", "Kategori": "Klasik (Monoalfabetik)", "Tipe Kunci": "Simetris (Angka Shift k)", "Kompleksitas": "O(N)", "Ketahanan": "Rendah (25 Ruang Kunci)", "Fungsi Utama": "Pembelajaran Dasar Substitusi"},
         {"Algoritma": "Vigenère Cipher", "Kategori": "Klasik (Polialfabetik)", "Tipe Kunci": "Simetris (Kata Kunci)", "Kompleksitas": "O(N)", "Ketahanan": "Sedang (Polialfabetik)", "Fungsi Utama": "Pengacakan Frekuensi Karakter"},
-        {"Algoritma": "AES-128", "Kategori": "Modern (Cipher Blok)", "Tipe Kunci": "Simetris (128-bit)", "Kompleksitas": "O(N) Blok", "Ketahanan": "Sangat Tinggi (2^128)", "Fungsi Utama": "Kerahasiaan Data Massal"},
         {"Algoritma": "Vernam Cipher", "Kategori": "Modern (Cipher Aliran)", "Tipe Kunci": "Simetris (Keystream Bit/Byte)", "Kompleksitas": "O(N) Bitwise", "Ketahanan": "Sempurna jika OTP (Unbreakable)", "Fungsi Utama": "Kerahasiaan Aliran Data Realtime"},
+        {"Algoritma": "AES-128", "Kategori": "Modern (Cipher Blok)", "Tipe Kunci": "Simetris (128-bit)", "Kompleksitas": "O(N) Blok", "Ketahanan": "Sangat Tinggi (2^128)", "Fungsi Utama": "Kerahasiaan Data Massal"},
     ])
     st.dataframe(comp_df, width="stretch", hide_index=True)
 
@@ -155,11 +155,11 @@ elif menu == "Menu 1: Caesar Cipher":
 elif menu == "Menu 2: Vigenère Cipher":
     render_vigenere_page()
 
-elif menu == "Menu 3: AES-128 Block Cipher":
-    render_aes_page()
-
-elif menu == "Menu 4: Vernam Stream Cipher":
+elif menu == "Menu 3: Vernam Stream Cipher":
     render_vernam_page()
+
+elif menu == "Menu 4: AES-128 Block Cipher":
+    render_aes_page()
 
 elif menu == "Menu 5: Super Enkripsi":
     render_super_page()
@@ -216,7 +216,7 @@ elif menu == "Informasi Tim & Kontributor":
             <p style="color: #4A709C; font-size: 0.88rem; margin-bottom: 12px; font-family: 'JetBrains Mono';">NIM: {st.session_state['member_3_nim']}</p>
             <p style="color: #1E3A5F; font-size: 0.92rem; line-height: 1.5; margin-bottom: 6px;">
                 <b>Tugas Utama:</b> AES-128 Block Cipher (Enkripsi & Dekripsi CBC)<br>
-                <b>Tugas Tambahan:</b> Antarmuka Menu 3 & Visualisasi State Matrix 4x4
+                <b>Tugas Tambahan:</b> Antarmuka Menu 4 & Visualisasi State Matrix 4x4
             </p>
             <small style="color: #4A709C;">File Pengerjaan: <code>modules/menu3_aes.py</code></small>
         </div>
@@ -245,7 +245,7 @@ elif menu == "Informasi Tim & Kontributor":
             <p style="color: #4A709C; font-size: 0.88rem; margin-bottom: 12px; font-family: 'JetBrains Mono';">NIM: {st.session_state['member_4_nim']}</p>
             <p style="color: #1E3A5F; font-size: 0.92rem; line-height: 1.5; margin-bottom: 6px;">
                 <b>Tugas Utama:</b> Vernam Stream Cipher (Enkripsi & Dekripsi Bitwise XOR)<br>
-                <b>Tugas Tambahan:</b> Antarmuka Menu 4 & Simulasi Aliran Bit One-Time Pad
+                <b>Tugas Tambahan:</b> Antarmuka Menu 3 & Simulasi Aliran Bit One-Time Pad
             </p>
             <small style="color: #4A709C;">File Pengerjaan: <code>modules/menu4_vernam.py</code></small>
         </div>
