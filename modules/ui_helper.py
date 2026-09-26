@@ -89,23 +89,67 @@ def load_global_css():
             border: 1px solid #D8CFC4;
         }
 
-        /* 5. Custom Button Styling (Solid Navy Main) */
+        /* 5. Custom Button Styling */
         .stButton > button {
-            background-color: #002D80 !important;
-            color: #FFFFFF !important;
             border-radius: 8px !important;
             font-family: 'Plus Jakarta Sans', sans-serif !important;
             font-weight: 600 !important;
-            border: none !important;
             padding: 0.55rem 1.2rem !important;
             transition: all 0.2s ease !important;
-            box-shadow: 0 2px 8px rgba(0, 45, 128, 0.15) !important;
         }
 
-        .stButton > button:hover {
-            background-color: #142742 !important;
+        /* 5A. Tombol Utama / Primary (Mode Aktif & Tombol Jalankan): Solid Navy Blue (#002D80) */
+        .stButton > button[data-testid="baseButton-primary"],
+        .stButton > button[kind="primary"] {
+            background-color: #002D80 !important;
+            color: #FFFFFF !important;
+            border: 1.5px solid #002D80 !important;
+            font-weight: 700 !important;
             box-shadow: 0 4px 14px rgba(0, 45, 128, 0.25) !important;
+        }
+
+        .stButton > button[data-testid="baseButton-primary"] p,
+        .stButton > button[kind="primary"] p {
+            color: #FFFFFF !important;
+            font-weight: 700 !important;
+        }
+
+        .stButton > button[data-testid="baseButton-primary"]:hover,
+        .stButton > button[kind="primary"]:hover {
+            background-color: #142742 !important;
+            border-color: #142742 !important;
+            box-shadow: 0 6px 18px rgba(0, 45, 128, 0.35) !important;
             transform: translateY(-1px);
+        }
+
+        /* 5B. Tombol Secondary (Mode Inaktif & Tombol Tambahan): Putih Bersih saat mouse belum mendekat */
+        .stButton > button[data-testid="baseButton-secondary"],
+        .stButton > button[kind="secondary"] {
+            background-color: #FFFFFF !important;
+            color: #1E3A5F !important;
+            border: 1.5px solid #D8CFC4 !important;
+            box-shadow: none !important;
+        }
+
+        .stButton > button[data-testid="baseButton-secondary"] p,
+        .stButton > button[kind="secondary"] p {
+            color: #1E3A5F !important;
+            font-weight: 600 !important;
+            transition: color 0.2s ease !important;
+        }
+
+        /* 5C. Tombol Secondary saat HOVER: Begitu mouse mengenai tombol -> Baru berubah jadi warna biru Navy (#002D80) */
+        .stButton > button[data-testid="baseButton-secondary"]:hover,
+        .stButton > button[kind="secondary"]:hover {
+            background-color: #002D80 !important;
+            border-color: #002D80 !important;
+            box-shadow: 0 4px 12px rgba(0, 45, 128, 0.22) !important;
+            transform: translateY(-1px);
+        }
+
+        .stButton > button[data-testid="baseButton-secondary"]:hover p,
+        .stButton > button[kind="secondary"]:hover p {
+            color: #FFFFFF !important;
         }
 
         /* 6. Form Inputs & Text Areas */
@@ -247,3 +291,46 @@ def render_header(title: str, subtitle: str, pic_name: str, category: str):
         unsafe_allow_html=True
     )
     st.markdown(f'<div class="menu-desc" style="margin-top: 0.5rem;">{subtitle}</div>', unsafe_allow_html=True)
+
+
+def render_mode_selector(session_state_key: str, key_prefix: str, label_enc: str = "Enkripsi Pesan", label_dec: str = "Dekripsi Pesan") -> str:
+    """
+    Komponen Pemilih Mode Operasi (Enkripsi Pesan / Dekripsi Pesan) bergaya DataIn:
+    - Default selalu mode Enkripsi.
+    - Mode yang sedang dipilih: Berwarna biru navy pekat (#002D80) dengan teks putih (type="primary").
+    - Mode yang tidak dipilih: Berlatar putih bersih (type="secondary").
+    - Mode yang tidak dipilih saat di-hover kursor mouse: Baru berubah warna jadi biru navy.
+    - Tanpa emotikon centang.
+    """
+    if session_state_key not in st.session_state or not st.session_state[session_state_key]:
+        st.session_state[session_state_key] = label_enc
+
+    current_mode = st.session_state[session_state_key]
+    is_enc = (current_mode == label_enc)
+
+    st.markdown("<p style='font-size: 0.88rem; font-weight: 600; color: #1E3A5F; margin-bottom: 8px;'>Pilih Mode Operasi:</p>", unsafe_allow_html=True)
+    c_m1, c_m2, _ = st.columns([1.2, 1.2, 2.6])
+
+    with c_m1:
+        if st.button(
+            label_enc,
+            key=f"mode_btn_{key_prefix}_enc",
+            type="primary" if is_enc else "secondary",
+            use_container_width=True
+        ):
+            st.session_state[session_state_key] = label_enc
+            st.rerun()
+
+    with c_m2:
+        if st.button(
+            label_dec,
+            key=f"mode_btn_{key_prefix}_dec",
+            type="primary" if not is_enc else "secondary",
+            use_container_width=True
+        ):
+            st.session_state[session_state_key] = label_dec
+            st.rerun()
+
+    st.divider()
+    return st.session_state[session_state_key]
+

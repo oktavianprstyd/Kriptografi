@@ -4,9 +4,9 @@ import streamlit as st
 import pandas as pd
 
 try:
-    from .ui_helper import render_header, load_global_css
+    from .ui_helper import render_header, load_global_css, render_mode_selector
 except ImportError:
-    from ui_helper import render_header, load_global_css
+    from ui_helper import render_header, load_global_css, render_mode_selector
 
 
 # ==============================================================================
@@ -20,7 +20,7 @@ def generate_otp_key(length: int) -> str:
     Membangkitkan aliran kunci acak murni (One-Time Pad / Kasus 3 Slide 22).
     Panjang kunci persis sama dengan panjang teks plainteks.
     """
-    alphabet = string.ascii_letters + string.digits + "!@#$%^&*()_+-="
+    alphabet = string.ascii_letters + string.digits
     return "".join(secrets.choice(alphabet) for _ in range(max(1, length)))
 
 
@@ -194,10 +194,12 @@ def render_vernam_page():
     )
 
     # Inisialisasi default session state
+    if "vernam_mode" not in st.session_state:
+        st.session_state["vernam_mode"] = "Enkripsi Pesan"
     if "vernam_last_hex" not in st.session_state:
         st.session_state["vernam_last_hex"] = ""
     if "vernam_last_key" not in st.session_state:
-        st.session_state["vernam_last_key"] = "RAHASIA"
+        st.session_state["vernam_last_key"] = "INFORMATIKA"
     if "vernam_steps" not in st.session_state:
         st.session_state["vernam_steps"] = []
     if "vernam_dec_steps" not in st.session_state:
@@ -214,13 +216,7 @@ def render_vernam_page():
     # TAB 1: OPERASI ENKRIPSI & DEKRIPSI
     # --------------------------------------------------------------------------
     with tab_main:
-        mode_op = st.radio(
-            "Pilih Mode Operasi",
-            ["Enkripsi Pesan", "Dekripsi Pesan"],
-            horizontal=True,
-            key="vernam_mode_choice"
-        )
-        st.divider()
+        mode_op = render_mode_selector(session_state_key="vernam_mode", key_prefix="vernam")
 
         # MODE ENKRIPSI
         if mode_op == "Enkripsi Pesan":
@@ -248,24 +244,50 @@ def render_vernam_page():
 
                 if is_otp:
                     st.caption("Mode OTP: Panjang kunci keystream wajib dibuat minimal sama panjang dengan plainteks.")
-                    col_gen_k, col_k_field = st.columns([1, 2])
+                    req_len = max(len(p_text.encode("utf-8")), 1)
+
+                    # Inisialisasi default OTP jika belum ada di state
+                    if "vernam_key_otp_in" not in st.session_state or not st.session_state["vernam_key_otp_in"]:
+                        initial_otp = generate_otp_key(req_len)
+                        st.session_state["vernam_key_otp_in"] = initial_otp
+                        st.session_state["vernam_last_key"] = initial_otp
+
+                    col_gen_k, col_k_field = st.columns([1.2, 2])
                     with col_gen_k:
-                        if st.button("Generate Kunci OTP Acak", key="vernam_gen_otp_btn"):
-                            st.session_state["vernam_last_key"] = generate_otp_key(len(p_text.encode("utf-8")))
+                        st.markdown("<div style='height: 28px;'></div>", unsafe_allow_html=True)
+                        if st.button("Generate Kunci OTP Acak", key="vernam_gen_otp_btn", use_container_width=True):
+                            new_otp = generate_otp_key(req_len)
+                            st.session_state["vernam_key_otp_in"] = new_otp
+                            st.session_state["vernam_last_key"] = new_otp
+                            st.rerun()
+
                     with col_k_field:
                         key_val = st.text_input(
                             "Kunci Keystream OTP:",
-                            value=st.session_state.get("vernam_last_key", generate_otp_key(len(p_text))),
                             key="vernam_key_otp_in"
                         )
+                        st.session_state["vernam_last_key"] = key_val
+
+                    # Info validasi panjang byte
+                    p_bytes_len = len(p_text.encode("utf-8"))
+                    k_bytes_len = len(key_val.encode("utf-8"))
+                    if k_bytes_len < p_bytes_len:
+                        st.warning(
+                            f"Panjang kunci OTP ({k_bytes_len} byte) lebih pendek dari plainteks ({p_bytes_len} byte)! "
+                            f"Silakan klik tombol 'Generate Kunci OTP Acak'."
+                        )
+                    else:
+                        st.caption(f"Status Kunci: Valid untuk OTP ({k_bytes_len} byte >= {p_bytes_len} byte plainteks).")
                 else:
+                    if "vernam_key_rep_in" not in st.session_state:
+                        st.session_state["vernam_key_rep_in"] = "INFORMATIKA"
                     key_val = st.text_input(
                         "Kunci Teks Keystream (diulang periodik):",
-                        value=st.session_state.get("vernam_last_key", "INFORMATIKA"),
                         key="vernam_key_rep_in"
                     )
+                    st.session_state["vernam_last_key"] = key_val
 
-                btn_enc = st.button("Jalankan Enkripsi Vernam (XOR)", key="vernam_btn_enc")
+                btn_enc = st.button("Jalankan Enkripsi Vernam (XOR)", key="vernam_btn_enc", type="primary", use_container_width=True)
 
             with c_out:
                 st.markdown("##### 2. Hasil Cipherteks Aliran")
@@ -276,6 +298,8 @@ def render_vernam_page():
                         st.session_state["vernam_last_hex"] = hex_res
                         st.session_state["vernam_last_key"] = key_val
                         st.session_state["vernam_steps"] = steps_res
+                        st.session_state["vernam_hex_dec_in"] = hex_res
+                        st.session_state["vernam_dec_key_in"] = key_val
 
                         st.markdown("**Cipherteks Format Heksadesimal (Standar Industri):**")
                         st.markdown(f'<div class="cipher-box">{hex_res}</div>', unsafe_allow_html=True)
@@ -299,21 +323,32 @@ def render_vernam_page():
 
             with c_dec_inp:
                 st.markdown("##### 1. Masukan Cipherteks & Kunci Keystream")
-                init_hex = st.session_state.get("vernam_last_hex", "09 0B 0A 0E 05 0E 1B 65 02 1C 07 1F 1A 00 1D 0E 09 06 65 04 01 0B 0A 1D 07 65 1E 1F 01")
+                if st.session_state.get("vernam_last_hex") and st.session_state.get("vernam_last_key"):
+                    if st.button("Gunakan Cipherteks & Kunci dari Sesi Enkripsi Terakhir", key="vernam_btn_sync_enc", use_container_width=True):
+                        st.session_state["vernam_hex_dec_in"] = st.session_state["vernam_last_hex"]
+                        st.session_state["vernam_dec_key_in"] = st.session_state["vernam_last_key"]
+                        st.rerun()
+
+                if "vernam_hex_dec_in" not in st.session_state:
+                    st.session_state["vernam_hex_dec_in"] = st.session_state.get(
+                        "vernam_last_hex",
+                        "09 0B 0A 0E 05 0E 1B 65 02 1C 07 1F 1A 00 1D 0E 09 06 65 04 01 0B 0A 1D 07 65 1E 1F 01"
+                    )
                 dec_hex_input = st.text_area(
                     "Masukkan cipherteks format Heksadesimal (Hex):",
-                    value=init_hex,
-                    height=110,
-                    key="vernam_hex_dec_in"
+                    key="vernam_hex_dec_in",
+                    height=110
                 )
+
+                if "vernam_dec_key_in" not in st.session_state:
+                    st.session_state["vernam_dec_key_in"] = st.session_state.get("vernam_last_key", "INFORMATIKA")
 
                 dec_key = st.text_input(
                     "Kunci Keystream Dekripsi:",
-                    value=st.session_state.get("vernam_last_key", "INFORMATIKA"),
                     key="vernam_dec_key_in"
                 )
 
-                btn_dec = st.button("Jalankan Dekripsi Vernam", key="vernam_btn_dec")
+                btn_dec = st.button("Jalankan Dekripsi Vernam", key="vernam_btn_dec", type="primary", use_container_width=True)
 
             with c_dec_out:
                 st.markdown("##### 2. Hasil Rekonstruksi Plainteks")

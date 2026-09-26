@@ -21,13 +21,13 @@ except ImportError:
 
 def super_encrypt(plaintext: str, caesar_shift: int, vigenere_key: str, vernam_key: str = "VERNAM_STREAM_KEY", aes_key: str = "KunciAESSuper12"):
     # 1. Caesar Cipher (Orang 1 - Klasik Monoalfabetik)
-    c_out, _ = caesar_encrypt(plaintext, caesar_shift)
+    c_out, c_steps = caesar_encrypt(plaintext, caesar_shift)
 
     # 2. Vigenère Cipher (Orang 2 - Klasik Polialfabetik)
-    v_out, _ = vigenere_encrypt(c_out, vigenere_key)
+    v_out, v_steps = vigenere_encrypt(c_out, vigenere_key)
 
     # 3. Vernam Stream Cipher (Orang 4 - Modern Aliran Bitwise XOR)
-    _, vernam_hex, _, _ = vernam_encrypt(v_out, vernam_key)
+    c_bytes, vernam_hex, bin_res, vernam_steps = vernam_encrypt(v_out, vernam_key, mode="repeat")
 
     # 4. AES-128 Block Cipher (Orang 3 - Modern Blok)
     aes_res = aes_encrypt(vernam_hex, aes_key)
@@ -39,7 +39,25 @@ def super_encrypt(plaintext: str, caesar_shift: int, vigenere_key: str, vernam_k
         {"Tahap": 3, "Algoritma": "Vernam Stream Cipher (Modern Aliran)", "Penanggung Jawab": "Orang 4 (Oktavian)", "Hasil Transformasi": str(vernam_hex)},
         {"Tahap": 4, "Algoritma": "AES-128 Block Cipher (Modern Blok)", "Penanggung Jawab": "Orang 3 (Adha)", "Hasil Transformasi": str(aes_hex)},
     ]
-    return {"final_cipher": aes_hex, "stages": stages}
+    return {
+        "final_cipher": aes_hex,
+        "stages": stages,
+        "plaintext": plaintext,
+        "caesar_shift": caesar_shift,
+        "caesar_out": c_out,
+        "caesar_steps": c_steps,
+        "vigenere_key": vigenere_key,
+        "vigenere_out": v_out,
+        "vigenere_steps": v_steps,
+        "vernam_key": vernam_key,
+        "vernam_hex": vernam_hex,
+        "vernam_bin": bin_res,
+        "vernam_steps": vernam_steps,
+        "aes_key": aes_key,
+        "aes_hex": aes_hex,
+        "aes_b64": aes_res.get("b64_str", ""),
+        "aes_trace": aes_res.get("demo_trace", {})
+    }
 
 
 def super_decrypt(ciphertext_input: str, caesar_shift: int, vigenere_key: str, vernam_key: str = "VERNAM_STREAM_KEY", aes_key: str = "KunciAESSuper12"):
@@ -90,7 +108,7 @@ def render_super_page():
                 k_vernam_sup = st.text_input("Kunci Keystream Vernam (Orang 4):", value="VERNAM_STREAM_KEY", key="sup_kvernam")
                 k_aes_sup = st.text_input("Kunci AES-128 (Orang 3):", value="KunciAESSuper12", key="sup_kaes")
 
-            btn_sup_enc = st.button("Jalankan Super Enkripsi 4 Tahap", key="sup_btn_enc", width="stretch")
+            btn_sup_enc = st.button("Jalankan Super Enkripsi 4 Tahap", key="sup_btn_enc", type="primary", use_container_width=True)
 
         with c2:
             st.markdown("##### Hasil Akhir Super Cipherteks")
@@ -125,7 +143,7 @@ def render_super_page():
                 kd_v = st.text_input("Kunci Vigenère Pembalik (Tahap 2):", value="INFORMATIKA", key="sup_kdv")
                 kd_c = st.number_input("Kunci Caesar Pembalik (Tahap 1):", 1, 25, 3, key="sup_kdc")
 
-            btn_sup_dec = st.button("Jalankan Super Dekripsi (Prinsip LIFO)", key="sup_btn_dec", width="stretch")
+            btn_sup_dec = st.button("Jalankan Super Dekripsi (Prinsip LIFO)", key="sup_btn_dec", type="primary", use_container_width=True)
 
         with c2:
             st.markdown("##### Hasil Plainteks Rekonstruksi")
@@ -141,11 +159,115 @@ def render_super_page():
                 st.info("Tekan tombol 'Jalankan Super Dekripsi' untuk memproses.")
 
     with tab_pipe:
-        st.markdown("##### Tabel Transformasi di Setiap Stasiun Pipeline")
-        if "sup_res" in st.session_state and "stages" in st.session_state["sup_res"]:
-            st.dataframe(pd.DataFrame(st.session_state["sup_res"]["stages"]), width="stretch", hide_index=True)
-        else:
-            st.info("Jalankan proses super enkripsi terlebih dahulu untuk memuat tabel transformasi.")
+        # Sediakan data awal jika belum pernah dijalankan
+        if "sup_res" not in st.session_state or "stages" not in st.session_state["sup_res"]:
+            st.session_state["sup_res"] = super_encrypt(
+                "BELAJAR KRIPTOGRAFI", 3, "INFORMATIKA", "VERNAM_STREAM_KEY", "KunciAESSuper12"
+            )
+
+        res_data = st.session_state["sup_res"]
+
+        st.markdown("##### 1. Ikhtisar Alur Transformasi Pipeline 4 Stasiun")
+        st.dataframe(pd.DataFrame(res_data["stages"]), width="stretch", hide_index=True)
+        st.divider()
+
+        st.markdown("##### 2. Pelacakan Transformasi Step-by-Step Setiap Algoritma")
+        st.caption("Pilih tab di bawah untuk melihat rincian kalkulasi matematika dan pelacakan langkah demi langkah pada setiap stasiun:")
+
+        sub_tab1, sub_tab2, sub_tab3, sub_tab4 = st.tabs([
+            "Tahap 1: Caesar Cipher (Klasik)",
+            "Tahap 2: Vigenère Cipher (Klasik)",
+            "Tahap 3: Vernam Stream Cipher (Modern Aliran)",
+            "Tahap 4: AES-128 Block Cipher (Modern Blok)"
+        ])
+
+        # TAB 1: CAESAR CIPHER STEP-BY-STEP
+        with sub_tab1:
+            st.markdown(f"""
+            <div class="datain-card" style="margin-bottom: 1rem;">
+                <span class="badge-category">Tahap 1</span>
+                <span class="badge-pic">Penanggung Jawab: Orang 1</span>
+                <p style="margin: 8px 0 4px 0; color: #1E3A5F; font-size: 0.95rem; line-height: 1.6;">
+                    <b>Input Plainteks:</b> <code>{res_data.get('plaintext', '')}</code><br>
+                    <b>Kunci Pergeseran (Shift k):</b> <code>{res_data.get('caesar_shift', 3)}</code><br>
+                    <b>Rumus Modulo 26:</b> <code>C_i = (P_i + {res_data.get('caesar_shift', 3)}) mod 26</code><br>
+                    <b>Output Sandi Caesar:</b> <code>{res_data.get('caesar_out', '')}</code>
+                </p>
+            </div>
+            """, unsafe_allow_html=True)
+
+            c_steps = res_data.get("caesar_steps", [])
+            if c_steps:
+                st.markdown("**Tabel Kalkulasi Modulo 26 Karakter demi Karakter:**")
+                st.dataframe(pd.DataFrame(c_steps), width="stretch", hide_index=True)
+
+        # TAB 2: VIGENÈRE CIPHER STEP-BY-STEP
+        with sub_tab2:
+            st.markdown(f"""
+            <div class="datain-card" style="margin-bottom: 1rem;">
+                <span class="badge-category">Tahap 2</span>
+                <span class="badge-pic">Penanggung Jawab: Orang 2</span>
+                <p style="margin: 8px 0 4px 0; color: #1E3A5F; font-size: 0.95rem; line-height: 1.6;">
+                    <b>Input (Output dari Caesar):</b> <code>{res_data.get('caesar_out', '')}</code><br>
+                    <b>Kata Kunci Vigenère:</b> <code>{res_data.get('vigenere_key', '')}</code><br>
+                    <b>Rumus Polialfabetik:</b> <code>C_i = (P_i + K_i) mod 26</code> (Berdasarkan Tabula Recta 26x26)<br>
+                    <b>Output Sandi Vigenère:</b> <code>{res_data.get('vigenere_out', '')}</code>
+                </p>
+            </div>
+            """, unsafe_allow_html=True)
+
+            v_steps = res_data.get("vigenere_steps", [])
+            if v_steps:
+                st.markdown("**Tabel Penjajaran Huruf Kunci dan Kalkulasi Polialfabetik:**")
+                st.dataframe(pd.DataFrame(v_steps), width="stretch", hide_index=True)
+
+        # TAB 3: VERNAM STREAM CIPHER STEP-BY-STEP
+        with sub_tab3:
+            st.markdown(f"""
+            <div class="datain-card" style="margin-bottom: 1rem;">
+                <span class="badge-category">Tahap 3</span>
+                <span class="badge-pic">Penanggung Jawab: Orang 4 (Oktavian Prasetya Adi)</span>
+                <p style="margin: 8px 0 4px 0; color: #1E3A5F; font-size: 0.95rem; line-height: 1.6;">
+                    <b>Input (Output dari Vigenère):</b> <code>{res_data.get('vigenere_out', '')}</code><br>
+                    <b>Kunci Keystream Vernam:</b> <code>{res_data.get('vernam_key', '')}</code><br>
+                    <b>Operasi Logika Bit:</b> <code>c_i = p_i ⊕ k_i</code> (Bitwise XOR Aliran Byte/Bit)<br>
+                    <b>Output Sandi Vernam (Hex):</b> <code>{res_data.get('vernam_hex', '')}</code>
+                </p>
+            </div>
+            """, unsafe_allow_html=True)
+
+            vn_steps = res_data.get("vernam_steps", [])
+            if vn_steps:
+                st.markdown("**Tabel Pelacakan Bitwise XOR per Byte (ASCII ➔ Biner ➔ XOR ➔ Heksadesimal):**")
+                st.dataframe(pd.DataFrame(vn_steps), width="stretch", hide_index=True)
+
+        # TAB 4: AES-128 BLOCK CIPHER STEP-BY-STEP
+        with sub_tab4:
+            st.markdown(f"""
+            <div class="datain-card" style="margin-bottom: 1rem;">
+                <span class="badge-category">Tahap 4</span>
+                <span class="badge-pic">Penanggung Jawab: Orang 3 (Adha)</span>
+                <p style="margin: 8px 0 4px 0; color: #1E3A5F; font-size: 0.95rem; line-height: 1.6;">
+                    <b>Input (Heksadesimal dari Vernam):</b> <code>{res_data.get('vernam_hex', '')}</code><br>
+                    <b>Kunci Rahasia AES-128:</b> <code>{res_data.get('aes_key', '')}</code> (Expanded ke 10 Putaran)<br>
+                    <b>Standar Industri:</b> FIPS 197 (CBC Mode, SubBytes, ShiftRows, MixColumns, AddRoundKey)<br>
+                    <b>Output Akhir Super Cipherteks:</b> <code>{res_data.get('aes_hex', '')}</code>
+                </p>
+            </div>
+            """, unsafe_allow_html=True)
+
+            aes_matrix = res_data.get("aes_trace", {}).get("State Matrix 4x4 (Blok Pertama)")
+            if aes_matrix:
+                st.markdown("**Visualisasi State Matrix 4×4 Blok Pertama (Representasi Heksadesimal NumPy):**")
+                df_matrix = pd.DataFrame(
+                    aes_matrix,
+                    columns=["Kolom 0", "Kolom 1", "Kolom 2", "Kolom 3"],
+                    index=["Baris 0", "Baris 1", "Baris 2", "Baris 3"]
+                )
+                st.dataframe(df_matrix, width="stretch")
+
+            st.markdown("**Final Super Cipherteks (Base64):**")
+            st.markdown(f'<div class="cipher-box" style="font-size: 0.85rem;">{res_data.get("aes_b64", "")}</div>', unsafe_allow_html=True)
 
     with tab_theory:
         st.markdown("##### Konsep Super Enkripsi Terpadu")

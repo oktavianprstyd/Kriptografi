@@ -2,9 +2,9 @@ import streamlit as st
 import pandas as pd
 
 try:
-    from .ui_helper import render_header, load_global_css
+    from .ui_helper import render_header, load_global_css, render_mode_selector
 except ImportError:
-    from ui_helper import render_header, load_global_css
+    from ui_helper import render_header, load_global_css, render_mode_selector
 
 # ==============================================================================
 # BAGIAN 1: LOGIKA CAESAR CIPHER (ORANG 1)
@@ -143,13 +143,7 @@ def render_caesar_page():
     ])
 
     with tab_main:
-        mode = st.radio(
-            "Pilih Mode Operasi",
-            ["Enkripsi Pesan", "Dekripsi Pesan"],
-            horizontal=True,
-            key="c_mode"
-        )
-        st.divider()
+        mode = render_mode_selector(session_state_key="c_mode", key_prefix="caesar")
 
         if mode == "Enkripsi Pesan":
             col1, col2 = st.columns([1, 1])
@@ -169,9 +163,10 @@ def render_caesar_page():
                     key="encrypt_shift"
                 )
                 encrypt_button = st.button(
-                    "Enkripsi Pesan",
+                    "Jalankan Enkripsi Caesar",
                     use_container_width=True,
-                    key="encrypt_button"
+                    key="encrypt_button",
+                    type="primary"
                 )
 
             with col2:
@@ -191,7 +186,7 @@ def render_caesar_page():
                         )
                         st.success("Proses enkripsi berhasil diselesaikan.")
                 else:
-                    st.info("Tekan tombol 'Enkripsi Pesan' untuk memproses teks.")
+                    st.info("Tekan tombol 'Jalankan Enkripsi Caesar' untuk memproses teks.")
 
         else:
             col1, col2 = st.columns([1, 1])
@@ -211,9 +206,10 @@ def render_caesar_page():
                     key="decrypt_shift"
                 )
                 decrypt_button = st.button(
-                    "Dekripsi Pesan",
+                    "Jalankan Dekripsi Caesar",
                     use_container_width=True,
-                    key="decrypt_button"
+                    key="decrypt_button",
+                    type="primary"
                 )
 
             with col2:

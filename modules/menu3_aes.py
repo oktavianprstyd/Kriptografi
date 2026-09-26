@@ -4,9 +4,9 @@ import base64
 import numpy as np
 
 try:
-    from .ui_helper import render_header, load_global_css
+    from .ui_helper import render_header, load_global_css, render_mode_selector
 except ImportError:
-    from ui_helper import render_header, load_global_css
+    from ui_helper import render_header, load_global_css, render_mode_selector
 
 # ==============================================================================
 # BAGIAN 1: MATEMATIKA MURNI AES-128
@@ -263,13 +263,7 @@ def render_aes_page():
     ])
 
     with tab_main:
-        mode = st.radio(
-            "Pilih Mode Operasi Matriks:",
-            ["Enkripsi Pesan", "Dekripsi Pesan"],
-            horizontal=True,
-            key="aes_mode"
-        )
-        st.divider()
+        mode = render_mode_selector(session_state_key="aes_mode", key_prefix="aes")
 
         if mode == "Enkripsi Pesan":
             col1, col2 = st.columns([1, 1])
@@ -278,26 +272,31 @@ def render_aes_page():
                 p_aes = st.text_area("Masukkan teks plainteks:", value="BELAJAR KRIPTOGRAFI MODERN", height=110, key="aes_plain_in")
                 k_aes = st.text_input("Kunci Rahasia AES (Otomatis di-pad ke 128-bit):", value="KunciSuperAman12", key="aes_key_in")
                 mode_opt = st.selectbox("Mode Operasi Blok:", ["CBC", "ECB"], key="aes_mode_in")
-                btn_aes_enc = st.button("Enkripsi Pesan", key="aes_btn_enc", use_container_width=True)
+                btn_aes_enc = st.button("Jalankan Enkripsi AES-128", key="aes_btn_enc", use_container_width=True, type="primary")
             with col2:
                 st.markdown("##### Hasil Enkripsi")
                 if btn_aes_enc:
                     aes_res = aes_encrypt(p_aes, k_aes, mode=mode_opt)
                     st.session_state["aes_trace"] = aes_res.get("demo_trace")
+                    st.session_state["aes_last_hex"] = aes_res.get("hex_str", "")
                     st.text_area("Cipherteks (Format Heksadesimal):", value=aes_res.get("hex_str", ""), height=80)
                     st.text_area("Cipherteks (Format Base64):", value=aes_res.get("b64_str", ""), height=60)
                     st.success("Proses enkripsi AES (Operasi Matriks) berhasil diselesaikan.")
                 else:
-                    st.info("Tekan tombol 'Enkripsi Pesan' untuk memproses teks.")
+                    st.info("Tekan tombol 'Jalankan Enkripsi AES-128' untuk memproses teks.")
 
         else:
             col1, col2 = st.columns([1, 1])
             with col1:
                 st.markdown("##### Input Cipherteks & Kunci")
-                c_aes_in = st.text_area("Masukkan teks cipherteks (Heksadesimal):", value="", height=110, key="aes_dec_in")
+                if "aes_last_hex" in st.session_state and st.session_state["aes_last_hex"]:
+                    if st.button("Salin Cipherteks dari Hasil Enkripsi", key="aes_btn_sync_enc"):
+                        st.session_state["aes_dec_in"] = st.session_state["aes_last_hex"]
+                        st.rerun()
+                c_aes_in = st.text_area("Masukkan teks cipherteks (Heksadesimal):", value=st.session_state.get("aes_dec_in", ""), height=110, key="aes_dec_in")
                 k_aes_dec = st.text_input("Kunci Rahasia AES:", value="KunciSuperAman12", key="aes_key_dec")
                 mode_opt_dec = st.selectbox("Mode Operasi Blok:", ["CBC", "ECB"], key="aes_mode_dec_in")
-                btn_aes_dec = st.button("Dekripsi Pesan", key="aes_btn_dec", use_container_width=True)
+                btn_aes_dec = st.button("Jalankan Dekripsi AES-128", key="aes_btn_dec", use_container_width=True, type="primary")
             with col2:
                 st.markdown("##### Hasil Dekripsi")
                 if btn_aes_dec:
@@ -308,12 +307,103 @@ def render_aes_page():
                         st.text_area("Teks Plainteks Rekonstruksi:", value=d_res, height=110)
                         st.success("Proses dekripsi pembalikan matriks AES selesai.")
                 else:
-                    st.info("Tekan tombol 'Dekripsi Pesan' untuk memproses teks.")
+                    st.info("Tekan tombol 'Jalankan Dekripsi AES-128' untuk memproses teks.")
 
     with tab_trace:
         st.markdown("##### Transformasi State Matrix 4×4")
-        if "aes_trace" in st.session_state and st.session_state["aes_trace"]:
-            st.write(st.session_state["aes_trace"])
+        
+        # Inisialisasi otomatis jika belum ada data agar tab langsung memuat visualisasi
+        is_demo = False
+        if "aes_trace" not in st.session_state or not st.session_state["aes_trace"]:
+            demo_res = aes_encrypt("BELAJAR KRIPTOGRAFI MODERN", "KunciSuperAman12", mode="CBC")
+            st.session_state["aes_trace"] = demo_res.get("demo_trace")
+            is_demo = True
+
+        if is_demo:
+            st.info("Menampilkan State Matrix dari contoh teks default ('BELAJAR KRIPTOGRAFI MODERN'). Lakukan enkripsi teks Anda di tab 'Operasi Enkripsi & Dekripsi' untuk memperbarui tabel.")
+
+        trace_data = st.session_state.get("aes_trace", {})
+        matrix_data = trace_data.get("State Matrix 4x4 (Blok Pertama)")
+
+        if matrix_data:
+            st.markdown("""
+            <div class="datain-card" style="margin-bottom: 1.2rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                    <span class="badge-category">FIPS 197 Standard</span>
+                    <span class="badge-pic">Blok Pertama (16 Byte / 128 Bit)</span>
+                </div>
+                <p style="margin: 0; color: #1E3A5F; font-size: 0.95rem; line-height: 1.5;">
+                    Visualisasi <b>State Matrix 4×4</b> setelah operasi transformasi round AES. Setiap sel merepresentasikan 1 byte dalam format heksadesimal <code>0xXX</code>.
+                </p>
+            </div>
+            """, unsafe_allow_html=True)
+
+            # 1. Tabel Utama State Matrix 4x4 (Standar FIPS-197)
+            st.markdown("**Tabel State Matrix 4×4 (Format Heksadesimal):**")
+            df_matrix = pd.DataFrame(
+                [[f"0x{cell}" for cell in row] for row in matrix_data],
+                columns=["Kolom 0", "Kolom 1", "Kolom 2", "Kolom 3"],
+                index=["Baris 0", "Baris 1", "Baris 2", "Baris 3"]
+            )
+            st.table(df_matrix)
+
+            # 2. Tabel Rincian 16 Byte Elemen Matriks
+            st.markdown("**Tabel Rincian 16 Byte Elemen State Matrix:**")
+            
+            # Peta nama karakter kontrol ASCII (0-31 dan 127)
+            CONTROL_NAMES = {
+                0: "NUL (Null)", 1: "SOH (Start of Header)", 2: "STX (Start of Text)",
+                3: "ETX (End of Text)", 4: "EOT (End of Transmission)", 5: "ENQ (Enquiry)",
+                6: "ACK (Acknowledge)", 7: "BEL (Bell)", 8: "BS (Backspace)",
+                9: "HT (Horizontal Tab)", 10: "LF (Line Feed / Enter)", 11: "VT (Vertical Tab)",
+                12: "FF (Form Feed)", 13: "CR (Carriage Return)", 14: "SO (Shift Out)",
+                15: "SI (Shift In)", 16: "DLE (Data Link Escape)", 17: "DC1 (Dev Ctrl 1)",
+                18: "DC2 (Dev Ctrl 2)", 19: "DC3 (Dev Ctrl 3)", 20: "DC4 (Dev Ctrl 4)",
+                21: "NAK (Negative Ack)", 22: "SYN (Sync Idle)", 23: "ETB (End Trans Block)",
+                24: "CAN (Cancel)", 25: "EM (End of Medium)", 26: "SUB (Substitute)",
+                27: "ESC (Escape)", 28: "FS (File Separator)", 29: "GS (Group Separator)",
+                30: "RS (Record Separator)", 31: "US (Unit Separator)", 127: "DEL (Delete)"
+            }
+
+            byte_rows = []
+            for r_idx, row in enumerate(matrix_data):
+                for c_idx, cell in enumerate(row):
+                    byte_idx = r_idx * 4 + c_idx
+                    dec_val = int(cell, 16)
+                    bin_val = f"{dec_val:08b}"
+                    
+                    if 32 <= dec_val <= 126:
+                        repr_char = f"'{chr(dec_val)}'"
+                        tipe_byte = "Teks ASCII Printable"
+                    elif dec_val in CONTROL_NAMES:
+                        repr_char = CONTROL_NAMES[dec_val]
+                        tipe_byte = "Control Byte (Non-printable)"
+                    else:
+                        repr_char = f"Biner Tinggi (0x{cell})"
+                        tipe_byte = "Extended Byte (Non-printable)"
+
+                    byte_rows.append({
+                        "No": byte_idx + 1,
+                        "Posisi": f"Baris {r_idx}, Kolom {c_idx}",
+                        "Nilai Hex": f"0x{cell}",
+                        "Nilai Desimal": dec_val,
+                        "Biner (8-bit)": bin_val,
+                        "Representasi Karakter": repr_char,
+                        "Escape Python": f"\\x{cell.lower()}",
+                        "Kategori Byte": tipe_byte
+                    })
+
+            st.dataframe(pd.DataFrame(byte_rows), width="stretch", hide_index=True)
+
+            # Penjelasan Ilmiah / Solusi Kriptografi Standar
+            st.info("""
+            💡 **Mengapa Byte Cipherteks AES Bersifat Non-Printable?**
+            * **Sifat Matematis Galois Field $GF(2^8)$**: AES memetakan teks ke dalam 256 nilai biner murni ($0$ s/d $255$). 
+            * **Keterbatasan Standar ASCII**: Rentang karakter ASCII yang dapat dicetak (*printable*) hanya bernilai **32 (Spasi) sampai 126 (`~`)**, yaitu hanya **95 karakter (~37%)**. Sebanyak **161 nilai lainnya (~63%)** adalah kode biner/kontrol yang tidak memiliki representasi huruf.
+            * **Solusi Baku Industri Kriptografi**: Cipherteks AES **tidak boleh disimpan atau dikirim sebagai string teks mentah** karena dapat rusak (*corrupted*). Standar dunia menyelesaikannya dengan mengonversi stream biner ke format teks aman:
+              1. **Format Heksadesimal (Hex/Base16)**: Mengubah tiap byte menjadi 2 digit hex (tersedia di tab hasil enkripsi).
+              2. **Format Base64 (RFC 4648)**: Mengubah setiap 3 byte menjadi 4 karakter ASCII aman untuk protokol jaringan HTTP/Email.
+            """)
         else:
             st.info("Lakukan proses enkripsi terlebih dahulu untuk memuat visualisasi State Matrix.")
 

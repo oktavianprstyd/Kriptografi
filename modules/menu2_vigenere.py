@@ -2,9 +2,9 @@ import streamlit as st
 import pandas as pd
 
 try:
-    from .ui_helper import render_header, load_global_css
+    from .ui_helper import render_header, load_global_css, render_mode_selector
 except ImportError:
-    from ui_helper import render_header, load_global_css
+    from ui_helper import render_header, load_global_css, render_mode_selector
 
 # ==============================================================================
 # BAGIAN 1: LOGIKA VIGENÈRE CIPHER
@@ -109,13 +109,7 @@ def render_vigenere_page():
     ])
 
     with tab_main:
-        mode = st.radio(
-            "Pilih Mode Operasi",
-            ["Enkripsi Pesan", "Dekripsi Pesan"],
-            horizontal=True,
-            key="v_mode"
-        )
-        st.divider()
+        mode = render_mode_selector(session_state_key="v_mode", key_prefix="vig")
 
         if mode == "Enkripsi Pesan":
             col1, col2 = st.columns([1, 1])
@@ -123,7 +117,7 @@ def render_vigenere_page():
                 st.markdown("##### Input Plainteks & Kata Kunci")
                 p_vig = st.text_area("Masukkan teks plainteks:", value="BELAJAR KRIPTOGRAFI", height=110, key="v_plain")
                 k_vig = st.text_input("Kata Kunci (Huruf Alfabet):", value="INFORMATIKA", key="v_key_enc")
-                btn_v_enc = st.button("Enkripsi Pesan", key="v_btn_enc", use_container_width=True)
+                btn_v_enc = st.button("Jalankan Enkripsi Vigenère", key="v_btn_enc", use_container_width=True, type="primary")
             with col2:
                 st.markdown("##### Hasil Enkripsi")
                 if btn_v_enc:
@@ -132,7 +126,7 @@ def render_vigenere_page():
                     st.text_area("Teks Cipherteks:", value=c_vig, height=110)
                     st.success("Proses enkripsi Vigenère selesai diproses.")
                 else:
-                    st.info("Tekan tombol 'Enkripsi Pesan' untuk memproses teks.")
+                    st.info("Tekan tombol 'Jalankan Enkripsi Vigenère' untuk memproses teks.")
 
         else:
             col1, col2 = st.columns([1, 1])
@@ -140,7 +134,7 @@ def render_vigenere_page():
                 st.markdown("##### Input Cipherteks & Kata Kunci")
                 c_vig_in = st.text_area("Masukkan teks cipherteks:", value="", height=110, key="v_cipher_in")
                 k_vig_dec = st.text_input("Kata Kunci (Huruf Alfabet):", value="INFORMATIKA", key="v_key_dec")
-                btn_v_dec = st.button("Dekripsi Pesan", key="v_btn_dec", use_container_width=True)
+                btn_v_dec = st.button("Jalankan Dekripsi Vigenère", key="v_btn_dec", use_container_width=True, type="primary")
             with col2:
                 st.markdown("##### Hasil Dekripsi")
                 if btn_v_dec:
@@ -148,7 +142,7 @@ def render_vigenere_page():
                     st.text_area("Teks Plainteks Rekonstruksi:", value=p_rec, height=110)
                     st.success("Proses dekripsi Vigenère selesai diproses.")
                 else:
-                    st.info("Tekan tombol 'Dekripsi Pesan' untuk memproses teks.")
+                    st.info("Tekan tombol 'Jalankan Dekripsi Vigenère' untuk memproses teks.")
 
     with tab_trace:
         st.markdown("##### Pelacakan Transformasi Per Karakter dan Kunci")
