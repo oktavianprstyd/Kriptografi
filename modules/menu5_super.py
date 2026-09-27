@@ -35,7 +35,7 @@ def super_encrypt(plaintext: str, caesar_shift: int, vigenere_key: str, vernam_k
 
     stages = [
         {"Tahap": 1, "Algoritma": "Caesar Cipher (Klasik Mono)", "Penanggung Jawab": "Grace Rianty Butar Butar (123240036)", "Hasil Transformasi": str(c_out)},
-        {"Tahap": 2, "Algoritma": "Vigenère Cipher (Klasik Poli)", "Penanggung Jawab": "Mirwan Qolyubi (123240016)", "Hasil Transformasi": str(v_out)},
+        {"Tahap": 2, "Algoritma": "Vigenère Cipher (Klasik Poli)", "Penanggung Jawab": "Mirwan Qolyubi (123240116)", "Hasil Transformasi": str(v_out)},
         {"Tahap": 3, "Algoritma": "Vernam Stream Cipher (Modern Aliran)", "Penanggung Jawab": "Oktavian Prasetya Adi (123240135)", "Hasil Transformasi": str(vernam_hex)},
         {"Tahap": 4, "Algoritma": "AES-128 Block Cipher (Modern Blok)", "Penanggung Jawab": "Adhafa Joan Putranto (123240069)", "Hasil Transformasi": str(aes_hex)},
     ]
@@ -206,7 +206,7 @@ def render_super_page():
             st.markdown(f"""
             <div class="datain-card" style="margin-bottom: 1rem;">
                 <span class="badge-category">Tahap 2</span>
-                <span class="badge-pic">Penanggung Jawab: Mirwan Qolyubi (123240016)</span>
+                <span class="badge-pic">Penanggung Jawab: Mirwan Qolyubi (123240116)</span>
                 <p style="margin: 8px 0 4px 0; color: #1E3A5F; font-size: 0.95rem; line-height: 1.6;">
                     <b>Input (Output dari Caesar):</b> <code>{res_data.get('caesar_out', '')}</code><br>
                     <b>Kata Kunci Vigenère:</b> <code>{res_data.get('vigenere_key', '')}</code><br>

@@ -107,7 +107,7 @@ def render_vigenere_page():
     render_header(
         title="Menu 2: Vigenère Cipher",
         subtitle="Substitusi Polialfabetik dengan Kata Kunci Berulang dan Tabula Recta",
-        pic_name="Penanggung Jawab: Mirwan Qolyubi (123240016)",
+        pic_name="Penanggung Jawab: Mirwan Qolyubi (123240116)",
         category="Kriptografi Klasik • Kelompok 3",
     )
 
@@ -205,7 +205,7 @@ def render_vigenere_page():
 
     with tab_theory:
         st.markdown("##### Teori & Karakteristik Vigenère Cipher")
-        st.markdown("""
+        st.markdown(r"""
         **Vigenère Cipher** adalah algoritma kriptografi klasik yang mengenkripsi plaintext menggunakan kata kunci berulang, sehingga tiap huruf digeser dengan nilai kunci yang berbeda-beda.
 
         ---
@@ -220,25 +220,26 @@ def render_vigenere_page():
 
         ##### Formula Matematis:
         * **Enkripsi**:
-          $$C_i = (P_i + K_i) \\pmod{26}$$
+          $$C_i = (P_i + K_i) \pmod{26}$$
         * **Dekripsi**:
-          $$P_i = (C_i - K_i + 26) \\pmod{26}$$
+          $$P_i = (C_i - K_i + 26) \pmod{26}$$
         * **Pembuktian Pembalikan (Invers)**:
-          $$((P + K) - K) \\pmod{26} = P \\pmod{26}$$
+          $$((P + K) - K) \pmod{26} = P \pmod{26}$$
 
         ---
 
         ##### Contoh Perhitungan Manual:
-        * **Plainteks**: `BELAJAR`
-        * **Kunci**: `KUNCI`
-        * **Enkripsi Karakter Pertama**:
-          $$\\begin{aligned}
-          B (1) + K (10) &= 11 \\pmod{26} \\implies \\mathbf{L} (11)
-          \\end{aligned}$$
-        * **Dekripsi Karakter Pertama**:
-          $$\\begin{aligned}
-          L (11) - K (10) &= 1 \\pmod{26} \\implies \\mathbf{B} (1)
-          \\end{aligned}$$
+        Diberikan plainteks **`BELAJAR`** dan kata kunci **`KUNCI`**.
+
+        Kata kunci diulang secara periodik untuk menyesuaikan panjang plainteks:
+        * Plainteks ($P$): `B  E  L  A  J  A  R` (Indeks: `1,  4, 11,  0,  9,  0, 17`)
+        * Kunci ($K$):     `K  U  N  C  I  K  U` (Indeks: `10, 20, 13,  2,  8, 10, 20`)
+
+        **1. Enkripsi Karakter Pertama ($P_0 = \text{'B'}, K_0 = \text{'K'}$):**
+        $$C_0 = (P_0 + K_0) \pmod{26} = (1 + 10) \pmod{26} = 11 \implies \mathbf{L}$$
+
+        **2. Dekripsi Karakter Pertama ($C_0 = \text{'L'}, K_0 = \text{'K'}$):**
+        $$P_0 = (C_0 - K_0 + 26) \pmod{26} = (11 - 10 + 26) \pmod{26} = 1 \implies \mathbf{B}$$
         """)
 
 

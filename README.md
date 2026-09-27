@@ -28,7 +28,7 @@ Setiap anggota tim bertanggung jawab penuh pada modul masing-masing di dalam fol
 | No | Modul & Algoritma | Penanggung Jawab | NIM | **File yang Dikerjakan** |
 |---|---|---|---|---|
 | **Menu 1** | **Caesar Cipher** | Grace Rianty Butar Butar | `123240036` | [`modules/menu1_caesar.py`](modules/menu1_caesar.py) |
-| **Menu 2** | **Vigenère Cipher** | Mirwan Qolyubi | `123240016` | [`modules/menu2_vigenere.py`](modules/menu2_vigenere.py) |
+| **Menu 2** | **Vigenère Cipher** | Mirwan Qolyubi | `123240116` | [`modules/menu2_vigenere.py`](modules/menu2_vigenere.py) |
 | **Menu 3** | **Vernam Stream Cipher** | Oktavian Prasetya Adi | `123240135` | [`modules/menu4_vernam.py`](modules/menu4_vernam.py) |
 | **Menu 4** | **AES-128 Block Cipher** | Adhafa Joan Putranto | `123240069` | [`modules/menu3_aes.py`](modules/menu3_aes.py) |
 | **Menu 5** | **Super Enkripsi (Pipeline)** | Kelompok 3 (Seluruh Anggota) | - | [`modules/menu5_super.py`](modules/menu5_super.py) |

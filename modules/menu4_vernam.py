@@ -457,18 +457,52 @@ def render_vernam_page():
 
         ---
 
-        ##### Contoh Perhitungan Biner:
-        * **Plainteks**: `10110010`
-        * **Key**: `01101100`
-        * **Enkripsi**:
-          $$\begin{array}{rl}           & 10110010 \\           \oplus & 01101100 \\           \hline           & \mathbf{11011110}           \end{array}$$
-        * **Dekripsi**:
-          $$\begin{array}{rl}           & 11011110 \\           \oplus & 01101100 \\           \hline           & \mathbf{10110010}           \end{array}$$
-
-        ---
-
-        ##### Tinjauan 3 Kasus Pembangkit Keystream:
+        ##### Contoh Perhitungan Biner (Bitwise XOR):
+        Diberikan aliran 8-bit plainteks dan keystream berikut:
+        * Plainteks ($P$): `10110010`
+        * Keystream ($K$): `01101100`
         """)
+
+        col_x1, col_x2 = st.columns(2)
+        with col_x1:
+            st.markdown("""
+            <div class="datain-card" style="margin-bottom: 1.2rem;">
+                <span class="badge-category">Langkah 1: Enkripsi</span>
+                <p style="margin: 8px 0 4px 0; color: #1E3A5F; font-size: 0.92rem; font-weight: 600;">
+                    Operasi Bitwise XOR: <code>C = P ⊕ K</code>
+                </p>
+                <div style="background: #FFFFFF; border: 1.5px solid #D8CFC4; border-radius: 6px; padding: 12px 16px; font-family: 'JetBrains Mono', monospace; font-size: 1rem; margin: 8px 0;">
+                    <div style="letter-spacing: 2px;">&nbsp;&nbsp;10110010 &nbsp;<span style="color: #4A709C; font-size: 0.85rem;">(Plainteks P)</span></div>
+                    <div style="letter-spacing: 2px;">⊕ 01101100 &nbsp;<span style="color: #4A709C; font-size: 0.85rem;">(Keystream K)</span></div>
+                    <div style="border-bottom: 2px solid #1E3A5F; margin: 6px 0;"></div>
+                    <div style="font-weight: 700; color: #002D80; letter-spacing: 2px;">&nbsp;&nbsp;11011110 &nbsp;<span style="color: #002D80; font-size: 0.85rem;">(Cipherteks C)</span></div>
+                </div>
+                <p style="color: #1E3A5F; font-size: 0.85rem; margin-bottom: 0;">
+                    Hasil Cipherteks: <b>11011110</b> (Karakter ASCII / Heksadesimal: <code>0xDE</code>)
+                </p>
+            </div>
+            """, unsafe_allow_html=True)
+
+        with col_x2:
+            st.markdown("""
+            <div class="datain-card" style="margin-bottom: 1.2rem;">
+                <span class="badge-category">Langkah 2: Dekripsi</span>
+                <p style="margin: 8px 0 4px 0; color: #1E3A5F; font-size: 0.92rem; font-weight: 600;">
+                    Invers Involutori XOR: <code>P = C ⊕ K</code>
+                </p>
+                <div style="background: #FFFFFF; border: 1.5px solid #D8CFC4; border-radius: 6px; padding: 12px 16px; font-family: 'JetBrains Mono', monospace; font-size: 1rem; margin: 8px 0;">
+                    <div style="letter-spacing: 2px;">&nbsp;&nbsp;11011110 &nbsp;<span style="color: #4A709C; font-size: 0.85rem;">(Cipherteks C)</span></div>
+                    <div style="letter-spacing: 2px;">⊕ 01101100 &nbsp;<span style="color: #4A709C; font-size: 0.85rem;">(Keystream K)</span></div>
+                    <div style="border-bottom: 2px solid #1E3A5F; margin: 6px 0;"></div>
+                    <div style="font-weight: 700; color: #002D80; letter-spacing: 2px;">&nbsp;&nbsp;10110010 &nbsp;<span style="color: #002D80; font-size: 0.85rem;">(Plainteks P Asli)</span></div>
+                </div>
+                <p style="color: #1E3A5F; font-size: 0.85rem; margin-bottom: 0;">
+                    Plainteks Rekonstruksi: <b>10110010</b> (Kembali ke Plainteks Semula)
+                </p>
+            </div>
+            """, unsafe_allow_html=True)
+
+        st.markdown("##### Tinjauan 3 Kasus Pembangkit Keystream:")
 
         c_k1, c_k2, c_k3 = st.columns(3)
         with c_k1:

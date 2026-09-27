@@ -290,7 +290,7 @@ def render_caesar_page():
 
     with tab_theory:
         st.markdown("##### Teori & Karakteristik Caesar Cipher")
-        st.markdown("""
+        st.markdown(r"""
         **Caesar Cipher** adalah algoritma kriptografi klasik yang mengenkripsi plaintext dengan menggeser tiap huruf sejauh $k$ posisi dalam alfabet. Dekripsi dilakukan dengan menggeser huruf ke arah sebaliknya.
 
         ---
@@ -305,27 +305,25 @@ def render_caesar_page():
 
         ##### Formula Matematis:
         * **Enkripsi**:
-          $$C_i = (P_i + K) \\pmod{26}$$
+          $$C_i = (P_i + K) \pmod{26}$$
         * **Dekripsi**:
-          $$P_i = (C_i - K) \\pmod{26}$$
+          $$P_i = (C_i - K) \pmod{26}$$
         * **Pembuktian Pembalikan (Involutori Invers)**:
-          $$((P + K) - K) \\pmod{26} = P \\pmod{26}$$
+          $$((P + K) - K) \pmod{26} = P \pmod{26}$$
 
         ---
 
         ##### Contoh Perhitungan Manual:
-        * **Plainteks**: `B` (Indeks $1$)
-        * **Key (Shift $k$)**: `8`
-        * **Enkripsi**:
-          $$\\begin{aligned}
-          C &= (B (1) + 8) \\pmod{26} \\\\
-          &= 9 \\implies \\mathbf{J}
-          \\end{aligned}$$
-        * **Dekripsi**:
-          $$\\begin{aligned}
-          P &= (J (9) - 8) \\pmod{26} \\\\
-          &= 1 \\implies \\mathbf{B}
-          \\end{aligned}$$
+        Diberikan plainteks **`B`** dan pergeseran kunci (*shift*) **$k = 8$**.
+
+        * Karakter Plainteks: `B` (Indeks alfabet ke-$1$, dengan $A=0, B=1, \dots, Z=25$)
+        * Nilai Pergeseran: $k = 8$
+
+        **1. Proses Enkripsi:**
+        $$C = (P + k) \pmod{26} = (1 + 8) \pmod{26} = 9 \implies \mathbf{J}$$
+
+        **2. Proses Dekripsi (Pembalikan):**
+        $$P = (C - k + 26) \pmod{26} = (9 - 8 + 26) \pmod{26} = 1 \implies \mathbf{B}$$
         """)
 
 
