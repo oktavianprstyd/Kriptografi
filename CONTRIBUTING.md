@@ -11,13 +11,13 @@ Setiap anggota memiliki **1 file khusus di dalam folder `modules/`**. File terse
 2. **Bagian 2: Tampilan Dashboard Streamlit** (`def render_xxx_page()`).
 3. **Bagian 3: Standalone Runner** (Bisa dites langsung sendiri).
 
-| Orang | Tugas Utama | Tugas Tambahan | **File yang Diedit** |
+| No | Tugas Utama | Penanggung Jawab | **File yang Diedit** |
 |---|---|---|---|
-| **Orang 1** | **Caesar Cipher**: enkripsi + dekripsi | Tampilan Menu 1 + testing Caesar | [`modules/menu1_caesar.py`](modules/menu1_caesar.py) |
-| **Orang 2** | **Vigenère Cipher**: enkripsi + dekripsi | Tampilan Menu 2 + testing Vigenère | [`modules/menu2_vigenere.py`](modules/menu2_vigenere.py) |
-| **Orang 3** | **AES**: enkripsi + dekripsi | Tampilan Menu 3 + testing AES | [`modules/menu3_aes.py`](modules/menu3_aes.py) |
-| **Orang 4** | **RSA**: enkripsi + dekripsi | Tampilan Menu 4 + testing RSA | [`modules/menu4_rsa.py`](modules/menu4_rsa.py) |
-| **Bersama** | **Super Enkripsi**: Pipeline 4 tahap | Tampilan Menu 5 + testing integrasi | [`modules/menu5_super.py`](modules/menu5_super.py) |
+| **Menu 1** | **Caesar Cipher**: enkripsi + dekripsi | Grace Rianty Butar Butar | [`modules/menu1_caesar.py`](modules/menu1_caesar.py) |
+| **Menu 2** | **Vigenère Cipher**: enkripsi + dekripsi | Mirwan Qolyubi | [`modules/menu2_vigenere.py`](modules/menu2_vigenere.py) |
+| **Menu 3** | **Vernam Stream Cipher**: enkripsi + dekripsi | Oktavian Prasetya Adi | [`modules/menu4_vernam.py`](modules/menu4_vernam.py) |
+| **Menu 4** | **AES-128**: enkripsi + dekripsi | Adhafa Joan Putranto | [`modules/menu3_aes.py`](modules/menu3_aes.py) |
+| **Menu 5** | **Super Enkripsi**: Pipeline 4 tahap | Seluruh Tim (Kelompok 3) | [`modules/menu5_super.py`](modules/menu5_super.py) |
 
 > 💡 **PENTING**: Kamu **TIDAK PERLU** mengedit file `app.py`. File `app.py` otomatis memanggil file kamu! Kamu hanya perlu mengedit dan mempercantik file milikmu sendiri di folder `modules/`.
 
@@ -27,21 +27,25 @@ Setiap anggota memiliki **1 file khusus di dalam folder `modules/`**. File terse
 
 Kamu bisa menjalankan dan melihat tampilan filemu sendiri secara langsung di browser tanpa perlu menjalankan menu utama:
 
-* **Orang 1 (Caesar)**:
+* **Grace (Caesar)**:
   ```bash
   streamlit run modules/menu1_caesar.py
   ```
-* **Orang 2 (Vigenère)**:
+* **Mirwan (Vigenère)**:
   ```bash
   streamlit run modules/menu2_vigenere.py
   ```
-* **Orang 3 (AES)**:
+* **Adhafa (AES-128)**:
   ```bash
   streamlit run modules/menu3_aes.py
   ```
-* **Orang 4 (RSA)**:
+* **Oktavian (Vernam)**:
   ```bash
-  streamlit run modules/menu4_rsa.py
+  streamlit run modules/menu4_vernam.py
+  ```
+* **Kelompok 3 (Super Enkripsi)**:
+  ```bash
+  streamlit run modules/menu5_super.py
   ```
 
 ---

@@ -13,25 +13,25 @@
 Aplikasi ini dikembangkan untuk memenuhi penugasan mata kuliah Kriptografi dengan arsitektur **Modular Terpadu (1 Orang = 1 File)**:
 1. **Menu 1 (Klasik 1)**: Caesar Cipher (Substitusi Monoalfabetik)
 2. **Menu 2 (Klasik 2)**: Vigenère Cipher (Substitusi Polialfabetik)
-3. **Menu 3 (Modern 1)**: AES-128 Block Cipher (Cipher Blok Simetris)
-4. **Menu 4 (Modern 2)**: RSA Asymmetric Cipher (Cipher Kunci Asimetris / Publik-Privat)
-5. **Menu 5 (Super Enkripsi)**: Integrasi berantai dari ke-4 algoritma kriptografi.
+3. **Menu 3 (Modern 1)**: Vernam Stream Cipher (Cipher Aliran Bitwise XOR & Autokey)
+4. **Menu 4 (Modern 2)**: AES-128 Block Cipher (Cipher Blok Simetris Standar Matriks NumPy)
+5. **Menu 5 (Super Enkripsi)**: Integrasi berantai 4 tahap dari seluruh algoritma (Caesar ➔ Vigenère ➔ Vernam ➔ AES-128).
 
-Setiap modul memuat **logika algoritma, antarmuka Streamlit, dan visualisasi proses langkah demi langkah (*step-by-step trace*)** secara mandiri.
+Setiap modul memuat **logika algoritma murni tanpa library pihak ketiga untuk kripto inti, antarmuka Streamlit yang responsif, dan visualisasi proses langkah demi langkah (*step-by-step trace*)** secara mandiri.
 
 ---
 
-## 👥 2. Pembagian File & Tugas Tim 4 Orang
+## 👥 2. Pembagian Modul & Penanggung Jawab (Kelompok 3)
 
-Setiap anggota tim bertanggung jawab penuh pada file masing-masing di dalam folder `modules/`:
+Setiap anggota tim bertanggung jawab penuh pada modul masing-masing di dalam folder `modules/`:
 
-| Orang | Tugas Utama | Tugas Tambahan | **File yang Dikerjakan** |
-|---|---|---|---|
-| **Orang 1** | **Caesar Cipher**: enkripsi + dekripsi | Tampilan Menu 1 + testing Caesar | [`modules/menu1_caesar.py`](modules/menu1_caesar.py) |
-| **Orang 2** | **Vigenère Cipher**: enkripsi + dekripsi | Tampilan Menu 2 + testing Vigenère | [`modules/menu2_vigenere.py`](modules/menu2_vigenere.py) |
-| **Orang 3** | **AES**: enkripsi + dekripsi | Tampilan Menu 3 + testing AES | [`modules/menu3_aes.py`](modules/menu3_aes.py) |
-| **Orang 4** | **RSA**: enkripsi + dekripsi | Tampilan Menu 4 + testing RSA | [`modules/menu4_rsa.py`](modules/menu4_rsa.py) |
-| **Bersama** | **Super Enkripsi**: Pipeline 4 tahap | Tampilan Menu 5 + testing integrasi | [`modules/menu5_super.py`](modules/menu5_super.py) |
+| No | Modul & Algoritma | Penanggung Jawab | NIM | **File yang Dikerjakan** |
+|---|---|---|---|---|
+| **Menu 1** | **Caesar Cipher** | Grace Rianty Butar Butar | `123240036` | [`modules/menu1_caesar.py`](modules/menu1_caesar.py) |
+| **Menu 2** | **Vigenère Cipher** | Mirwan Qolyubi | `123240016` | [`modules/menu2_vigenere.py`](modules/menu2_vigenere.py) |
+| **Menu 3** | **Vernam Stream Cipher** | Oktavian Prasetya Adi | `123240135` | [`modules/menu4_vernam.py`](modules/menu4_vernam.py) |
+| **Menu 4** | **AES-128 Block Cipher** | Adhafa Joan Putranto | `123240069` | [`modules/menu3_aes.py`](modules/menu3_aes.py) |
+| **Menu 5** | **Super Enkripsi (Pipeline)** | Kelompok 3 (Seluruh Anggota) | - | [`modules/menu5_super.py`](modules/menu5_super.py) |
 
 ---
 
@@ -44,14 +44,18 @@ ProjekKripto/
 ├── run.bat                     # Launcher otomatis satu-klik (Windows)
 ├── README.md                   # Dokumentasi proyek
 ├── CONTRIBUTING.md             # Panduan kolaborasi tim di GitHub
-└── modules/                    # Folder kerja tim (1 Orang = 1 File)
+├── STYLE_GUIDE.md              # Standar desain UI dan estetika
+├── Kripto .pdf                 # Slide materi & presentasi proyek
+├── .streamlit/
+│   └── config.toml             # Konfigurasi tema dan server Streamlit
+└── modules/                    # Folder kerja tim (1 Modul = 1 File)
     ├── __init__.py
-    ├── ui_helper.py            # Komponen desain, warna badge, & CSS bersama
-    ├── menu1_caesar.py         # File kerja Orang 1 (Algoritma + UI Caesar)
-    ├── menu2_vigenere.py       # File kerja Orang 2 (Algoritma + UI Vigenère)
-    ├── menu3_aes.py            # File kerja Orang 3 (Algoritma + UI AES-128)
-    ├── menu4_rsa.py            # File kerja Orang 4 (Algoritma + UI RSA)
-    └── menu5_super.py          # File kerja Bersama (Super Enkripsi 4 Tahap)
+    ├── ui_helper.py            # Komponen desain, selector mode, & CSS bersama
+    ├── menu1_caesar.py         # Grace (Caesar Cipher)
+    ├── menu2_vigenere.py       # Mirwan (Vigenère Cipher)
+    ├── menu3_aes.py            # Adhafa (AES-128 Block Cipher)
+    ├── menu4_vernam.py         # Oktavian (Vernam Stream Cipher)
+    └── menu5_super.py          # Bersama (Super Enkripsi 4 Tahap)
 ```
 
 ---
@@ -66,11 +70,11 @@ streamlit run app.py
 
 ### Menjalankan Halaman Mandiri (Standalone Test):
 Tiap anggota bisa langsung mengetes kodenya sendiri tanpa membuka menu utama:
-* Orang 1: `streamlit run modules/menu1_caesar.py`
-* Orang 2: `streamlit run modules/menu2_vigenere.py`
-* Orang 3: `streamlit run modules/menu3_aes.py`
-* Orang 4: `streamlit run modules/menu4_rsa.py`
-* Menu 5: `streamlit run modules/menu5_super.py`
+* Caesar: `streamlit run modules/menu1_caesar.py`
+* Vigenère: `streamlit run modules/menu2_vigenere.py`
+* AES-128: `streamlit run modules/menu3_aes.py`
+* Vernam: `streamlit run modules/menu4_vernam.py`
+* Super Enkripsi: `streamlit run modules/menu5_super.py`
 
 ---
 

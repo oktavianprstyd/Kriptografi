@@ -11,13 +11,12 @@ except ImportError:
 
 # ==============================================================================
 # BAGIAN 1: LOGIKA & MATEMATIKA VERNAM STREAM CIPHER
-# Penanggung Jawab: Orang 4 (Oktavian Prasetya Adi)
-# Mengacu pada: Materi 5 Kriptografi Modern (Slide 15 - 23)
+# Penanggung Jawab: Oktavian Prasetya Adi (123240135)
 # ==============================================================================
 
 def generate_otp_key(length: int) -> str:
     """
-    Membangkitkan aliran kunci acak murni (One-Time Pad / Kasus 3 Slide 22).
+    Membangkitkan aliran kunci acak murni (One-Time Pad / Truly Random).
     Panjang kunci persis sama dengan panjang teks plainteks.
     """
     alphabet = string.ascii_letters + string.digits
@@ -28,7 +27,6 @@ def vernam_encrypt(plaintext: str, key: str, mode: str = "repeat"):
     """
     Enkripsi Vernam Stream Cipher berbasis bitwise XOR:
     c_i = p_i ⊕ k_i
-    (Slide 18 & 19 Materi 5)
     
     Parameter:
       - plaintext: teks asli yang akan disandikan
@@ -90,7 +88,6 @@ def vernam_decrypt(cipher_hex_input: str, key: str, mode: str = "repeat"):
     Karena sifat involutori XOR: (P ⊕ K) ⊕ K = P ⊕ (K ⊕ K) = P ⊕ 0 = P
     Maka dekripsi persis sama dengan enkripsi:
     p_i = c_i ⊕ k_i
-    (Slide 18 Materi 5)
     
     Mengembalikan: (recovered_text, steps)
     """
@@ -150,7 +147,7 @@ def vernam_decrypt(cipher_hex_input: str, key: str, mode: str = "repeat"):
 
 def vernam_bit_simulation(plain_bits: str, key_bits: str):
     """
-    Simulasi Aliran Bit Murni persis seperti contoh Slide 19 Materi 5:
+    Simulasi Aliran Bit Murni dengan operasi bitwise XOR:
     Plainteks : 1100101
     Keystream : 1000110
     Cipherteks: 0100011
@@ -189,8 +186,8 @@ def render_vernam_page():
     render_header(
         title="Menu 3: Vernam Stream Cipher",
         subtitle="Kriptografi Modern Cipher Aliran (Stream Cipher) Berbasis Bitwise XOR (⊕) dan One-Time Pad",
-        pic_name="Penanggung Jawab: Orang 4 (Oktavian Prasetya Adi)",
-        category="Kriptografi Modern - Cipher Aliran"
+        pic_name="Penanggung Jawab: Oktavian Prasetya Adi (123240135)",
+        category="Kriptografi Modern - Cipher Aliran • Kelompok 3"
     )
 
     # Inisialisasi default session state
@@ -199,7 +196,7 @@ def render_vernam_page():
     if "vernam_last_hex" not in st.session_state:
         st.session_state["vernam_last_hex"] = ""
     if "vernam_last_key" not in st.session_state:
-        st.session_state["vernam_last_key"] = "INFORMATIKA"
+        st.session_state["vernam_last_key"] = "KUNCI"
     if "vernam_steps" not in st.session_state:
         st.session_state["vernam_steps"] = []
     if "vernam_dec_steps" not in st.session_state:
@@ -208,7 +205,7 @@ def render_vernam_page():
     tab_main, tab_trace, tab_bits, tab_theory = st.tabs([
         "Operasi Enkripsi & Dekripsi",
         "Pelacakan Bitwise XOR Step-by-Step",
-        "Simulasi Aliran Bit Murni (Slide 19)",
+        "Simulasi Aliran Bit Murni",
         "Teori & 3 Kasus Keystream"
     ])
 
@@ -226,16 +223,16 @@ def render_vernam_page():
                 st.markdown("##### 1. Masukan Plainteks & Konfigurasi Keystream")
                 p_text = st.text_area(
                     "Masukkan teks plainteks:",
-                    value="BELAJAR KRIPTOGRAFI MODERN UPN",
+                    value="BELAJAR",
                     height=100,
                     key="vernam_p_in"
                 )
 
                 keystream_mode = st.selectbox(
-                    "Tipe Pembangkit Keystream (Slide 20-22):",
+                    "Tipe Pembangkit Keystream:",
                     [
-                        "Keystream Periodik (Kunci Teks Berulang / Kasus 2 Slide 21)",
-                        "Keystream Acak Sempurna / One-Time Pad (OTP / Kasus 3 Slide 22)"
+                        "Keystream Periodik (Kunci Teks Berulang)",
+                        "Keystream Acak Sempurna / One-Time Pad (OTP)"
                     ],
                     key="vernam_ks_type"
                 )
@@ -392,12 +389,12 @@ def render_vernam_page():
             st.info("Lakukan proses enkripsi di Tab 1 untuk memuat rincian tabel pelacakan bitwise XOR.")
 
     # --------------------------------------------------------------------------
-    # TAB 3: SIMULASI ALIRAN BIT MURNI (SLIDE 19 MATERI 5)
+    # TAB 3: SIMULASI ALIRAN BIT MURNI
     # --------------------------------------------------------------------------
     with tab_bits:
-        st.markdown("##### Simulasi Aliran Bit Biner Murni (Persis Contoh Slide 19 Materi 5)")
+        st.markdown("##### Simulasi Aliran Bit Biner Murni")
         st.markdown("""
-        Pada Slide 19 perkuliahan, dicontohkan manipulasi bit biner langsung tanpa melalui teks ASCII:
+        Demonstrasi manipulasi bit biner langsung tanpa melalui teks ASCII:
         * Plainteks: `1100101`
         * Keystream: `1000110`
         * Cipherteks: `0100011`
@@ -430,24 +427,54 @@ def render_vernam_page():
         ])
         st.dataframe(xor_truth, width="stretch", hide_index=True)
 
-    # --------------------------------------------------------------------------
+    # ==============================================================================
     # TAB 4: TEORI & 3 KASUS KEYSTREAM
-    # --------------------------------------------------------------------------
+    # ==============================================================================
     with tab_theory:
-        st.markdown("##### Teori Vernam Cipher & 3 Kasus Keystream (Materi 5 Slide 15–23)")
-        st.markdown("""
-        **Vernam Cipher** diperkenalkan oleh **Gilbert S. Vernam** pada tahun 1917 untuk teleprinter telegraf. 
-        Vernam mengadopsi prinsip *One-Time Pad* (OTP) di mana karakter dikonversi menjadi representasi bit (0 atau 1) 
-        dan digabungkan menggunakan gerbang logika modulo-2 atau **Exclusive-OR (XOR)**.
-        """)
+        st.markdown("##### Teori & Karakteristik Vernam Cipher")
+        
+        # Tambahkan huruf 'r' di depan tanda kutip tiga untuk membuat raw string
+        st.markdown(r"""
+        **Vernam Cipher** adalah algoritma kriptografi simetris yang mengenkripsi plaintext dengan melakukan operasi XOR terhadap key. Proses dekripsi menggunakan operasi XOR yang sama.
 
-        st.markdown("##### Tinjauan 3 Kasus Pembangkit Keystream (Slide 20–22):")
+        ---
+
+        ##### Karakteristik Utama:
+        1. **Symmetric-Key Cipher**: Menggunakan kunci yang sama untuk proses enkripsi dan dekripsi.
+        2. **Operasi Bitwise XOR**: Pengacakan dilakukan pada tingkat bit atau byte menggunakan gerbang logika $\oplus$ (Modulo-2).
+        3. **Konsep One-Time Pad (OTP)**: Jika kunci memiliki panjang yang sama dengan plaintext dan benar-benar acak, konsepnya menjadi One-Time Pad dengan tingkat keamanan sempurna (*unbreakable*).
+        4. **Efisiensi Tinggi**: Proses komputasi sangat sederhana, cepat, dan bersifat *involutori* (algoritma enkripsi dan dekripsi identik).
+
+        ---
+
+        ##### Formula Matematis & Sifat Involutori:
+        * **Enkripsi**:
+          $$C = P \oplus K$$
+        * **Dekripsi**:
+          $$P = C \oplus K$$
+        * **Pembuktian Pembalikan (Involutori XOR)**:
+          $$(P \oplus K) \oplus K = P \oplus (K \oplus K) = P \oplus 0 = P$$
+
+        ---
+
+        ##### Contoh Perhitungan Biner:
+        * **Plainteks**: `10110010`
+        * **Key**: `01101100`
+        * **Enkripsi**:
+          $$\begin{array}{rl}           & 10110010 \\           \oplus & 01101100 \\           \hline           & \mathbf{11011110}           \end{array}$$
+        * **Dekripsi**:
+          $$\begin{array}{rl}           & 11011110 \\           \oplus & 01101100 \\           \hline           & \mathbf{10110010}           \end{array}$$
+
+        ---
+
+        ##### Tinjauan 3 Kasus Pembangkit Keystream:
+        """)
 
         c_k1, c_k2, c_k3 = st.columns(3)
         with c_k1:
             st.markdown("""
             <div class="datain-card">
-                <span class="badge-category">Kasus 1 (Slide 20)</span>
+                <span class="badge-category">Kasus 1</span>
                 <h4 style="margin: 8px 0; color: #1E3A5F;">Keystream Seluruhnya 0</h4>
                 <p style="color: #4A709C; font-size: 0.88rem; line-height: 1.5;">
                     Jika pembangkit mengeluarkan aliran bit kunci yang seluruhnya 0, maka:<br>
@@ -460,7 +487,7 @@ def render_vernam_page():
         with c_k2:
             st.markdown("""
             <div class="datain-card">
-                <span class="badge-category">Kasus 2 (Slide 21)</span>
+                <span class="badge-category">Kasus 2</span>
                 <h4 style="margin: 8px 0; color: #1E3A5F;">Keystream Periodik Berulang</h4>
                 <p style="color: #4A709C; font-size: 0.88rem; line-height: 1.5;">
                     Jika keystream berulang secara siklis mengikuti panjang kata kunci (seperti Vigenère biner):<br>
@@ -473,7 +500,7 @@ def render_vernam_page():
         with c_k3:
             st.markdown("""
             <div class="datain-card">
-                <span class="badge-category">Kasus 3 (Slide 22)</span>
+                <span class="badge-category">Kasus 3</span>
                 <h4 style="margin: 8px 0; color: #1E3A5F;">One-Time Pad (Truly Random)</h4>
                 <p style="color: #4A709C; font-size: 0.88rem; line-height: 1.5;">
                     Jika keystream benar-benar acak murni dan panjangnya sama dengan panjang plainteks:<br>
@@ -484,7 +511,7 @@ def render_vernam_page():
 
         st.markdown("""
         <div class="datain-card" style="margin-top: 1rem;">
-            <h4 style="color: #1E3A5F; margin-top: 0;">Kesimpulan Tingkat Keamanan (Slide 23)</h4>
+            <h4 style="color: #1E3A5F; margin-top: 0;">Kesimpulan Tingkat Keamanan</h4>
             <p style="color: #4A709C; font-size: 0.92rem; line-height: 1.6; margin-bottom: 0;">
                 Tingkat keamanan cipher aliran terletak di antara algoritma XOR sederhana (Kasus 2) dengan One-Time Pad (Kasus 3). 
                 Semakin acak keluaran yang dihasilkan oleh <i>keystream generator</i>, semakin sulit bagi kriptanalis untuk memecahkan cipherteks.
@@ -494,11 +521,11 @@ def render_vernam_page():
 
 
 # ==============================================================================
-# STANDALONE RUNNER: ORANG 4
+# STANDALONE RUNNER
 # ==============================================================================
 if __name__ == "__main__":
     st.set_page_config(
-        page_title="Vernam Stream Cipher - Orang 4",
+        page_title="Vernam Stream Cipher - Oktavian Prasetya Adi",
         page_icon="https://upload.wikimedia.org/wikipedia/id/c/c9/Logo_UPN_Veteran_Yogyakarta.png",
         layout="wide"
     )

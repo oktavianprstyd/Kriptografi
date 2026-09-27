@@ -34,10 +34,10 @@ def super_encrypt(plaintext: str, caesar_shift: int, vigenere_key: str, vernam_k
     aes_hex = aes_res.get("hex_str", vernam_hex)
 
     stages = [
-        {"Tahap": 1, "Algoritma": "Caesar Cipher (Klasik Mono)", "Penanggung Jawab": "Orang 1", "Hasil Transformasi": str(c_out)},
-        {"Tahap": 2, "Algoritma": "Vigenère Cipher (Klasik Poli)", "Penanggung Jawab": "Orang 2", "Hasil Transformasi": str(v_out)},
-        {"Tahap": 3, "Algoritma": "Vernam Stream Cipher (Modern Aliran)", "Penanggung Jawab": "Orang 4 (Oktavian)", "Hasil Transformasi": str(vernam_hex)},
-        {"Tahap": 4, "Algoritma": "AES-128 Block Cipher (Modern Blok)", "Penanggung Jawab": "Orang 3 (Adha)", "Hasil Transformasi": str(aes_hex)},
+        {"Tahap": 1, "Algoritma": "Caesar Cipher (Klasik Mono)", "Penanggung Jawab": "Grace Rianty Butar Butar (123240036)", "Hasil Transformasi": str(c_out)},
+        {"Tahap": 2, "Algoritma": "Vigenère Cipher (Klasik Poli)", "Penanggung Jawab": "Mirwan Qolyubi (123240016)", "Hasil Transformasi": str(v_out)},
+        {"Tahap": 3, "Algoritma": "Vernam Stream Cipher (Modern Aliran)", "Penanggung Jawab": "Oktavian Prasetya Adi (123240135)", "Hasil Transformasi": str(vernam_hex)},
+        {"Tahap": 4, "Algoritma": "AES-128 Block Cipher (Modern Blok)", "Penanggung Jawab": "Adhafa Joan Putranto (123240069)", "Hasil Transformasi": str(aes_hex)},
     ]
     return {
         "final_cipher": aes_hex,
@@ -60,7 +60,7 @@ def super_encrypt(plaintext: str, caesar_shift: int, vigenere_key: str, vernam_k
     }
 
 
-def super_decrypt(ciphertext_input: str, caesar_shift: int, vigenere_key: str, vernam_key: str = "VERNAM_STREAM_KEY", aes_key: str = "KunciAESSuper12"):
+def super_decrypt(ciphertext_input: str, caesar_shift: int, vigenere_key: str, vernam_key: str = "KUNCI", aes_key: str = "mysecretkey12345"):
     # 4. Pembalik AES-128 (AES Dekripsi)
     aes_plain = aes_decrypt(ciphertext_input, aes_key)
 
@@ -84,8 +84,8 @@ def render_super_page():
     render_header(
         title="Menu 5: Super Enkripsi",
         subtitle="Pipeline Terpadu 4 Tahap: Caesar ➔ Vigenère ➔ Vernam (Aliran) ➔ AES-128 (Blok)",
-        pic_name="Penanggung Jawab: Seluruh Tim",
-        category="Super Enkripsi Terpadu"
+        pic_name="Penanggung Jawab: Kelompok 3 (Grace, Mirwan, Adhafa, Oktavian)",
+        category="Super Enkripsi Terpadu • Kelompok 3"
     )
 
     tab_enc, tab_dec, tab_pipe, tab_theory = st.tabs([
@@ -99,14 +99,14 @@ def render_super_page():
         c1, c2 = st.columns([1, 1])
         with c1:
             st.markdown("##### Input Plainteks & Parameter Kunci 4 Modul")
-            plain_super = st.text_area("Masukkan teks plainteks:", value="BELAJAR KRIPTOGRAFI", height=90, key="sup_plain")
+            plain_super = st.text_area("Masukkan teks plainteks:", value="BELAJAR", height=90, key="sup_plain")
             k1, k2 = st.columns(2)
             with k1:
-                k_c = st.number_input("Kunci Caesar Shift k (Orang 1):", 1, 25, 3, key="sup_kc")
-                k_v = st.text_input("Kunci Vigenère (Orang 2):", value="INFORMATIKA", key="sup_kv")
+                k_c = st.number_input("Kunci Caesar Shift k (Tahap 1 - Caesar):", 1, 25, 8, key="sup_kc")
+                k_v = st.text_input("Kunci Vigenère (Tahap 2 - Vigenère):", value="KUNCI", key="sup_kv")
             with k2:
-                k_vernam_sup = st.text_input("Kunci Keystream Vernam (Orang 4):", value="VERNAM_STREAM_KEY", key="sup_kvernam")
-                k_aes_sup = st.text_input("Kunci AES-128 (Orang 3):", value="KunciAESSuper12", key="sup_kaes")
+                k_vernam_sup = st.text_input("Kunci Keystream Vernam (Tahap 3 - Vernam):", value="KUNCI", key="sup_kvernam")
+                k_aes_sup = st.text_input("Kunci AES-128 (Tahap 4 - AES):", value="mysecretkey12345", key="sup_kaes")
 
             btn_sup_enc = st.button("Jalankan Super Enkripsi 4 Tahap", key="sup_btn_enc", type="primary", use_container_width=True)
 
@@ -137,11 +137,11 @@ def render_super_page():
 
             kd1, kd2 = st.columns(2)
             with kd1:
-                kd_aes = st.text_input("Kunci AES Pembalik (Tahap 4):", value="KunciAESSuper12", key="sup_kdaes")
-                kd_vernam = st.text_input("Kunci Vernam Pembalik (Tahap 3):", value="VERNAM_STREAM_KEY", key="sup_kdvernam")
+                kd_aes = st.text_input("Kunci AES Pembalik (Tahap 4 - AES):", value="mysecretkey12345", key="sup_kdaes")
+                kd_vernam = st.text_input("Kunci Vernam Pembalik (Tahap 3 - Vernam):", value="KUNCI", key="sup_kdvernam")
             with kd2:
-                kd_v = st.text_input("Kunci Vigenère Pembalik (Tahap 2):", value="INFORMATIKA", key="sup_kdv")
-                kd_c = st.number_input("Kunci Caesar Pembalik (Tahap 1):", 1, 25, 3, key="sup_kdc")
+                kd_v = st.text_input("Kunci Vigenère Pembalik (Tahap 2 - Vigenère):", value="KUNCI", key="sup_kdv")
+                kd_c = st.number_input("Kunci Caesar Pembalik (Tahap 1 - Caesar):", 1, 25, 8, key="sup_kdc")
 
             btn_sup_dec = st.button("Jalankan Super Dekripsi (Prinsip LIFO)", key="sup_btn_dec", type="primary", use_container_width=True)
 
@@ -162,7 +162,7 @@ def render_super_page():
         # Sediakan data awal jika belum pernah dijalankan
         if "sup_res" not in st.session_state or "stages" not in st.session_state["sup_res"]:
             st.session_state["sup_res"] = super_encrypt(
-                "BELAJAR KRIPTOGRAFI", 3, "INFORMATIKA", "VERNAM_STREAM_KEY", "KunciAESSuper12"
+                "BELAJAR", 8, "KUNCI", "KUNCI", "mysecretkey12345"
             )
 
         res_data = st.session_state["sup_res"]
@@ -186,7 +186,7 @@ def render_super_page():
             st.markdown(f"""
             <div class="datain-card" style="margin-bottom: 1rem;">
                 <span class="badge-category">Tahap 1</span>
-                <span class="badge-pic">Penanggung Jawab: Orang 1</span>
+                <span class="badge-pic">Penanggung Jawab: Grace Rianty Butar Butar (123240036)</span>
                 <p style="margin: 8px 0 4px 0; color: #1E3A5F; font-size: 0.95rem; line-height: 1.6;">
                     <b>Input Plainteks:</b> <code>{res_data.get('plaintext', '')}</code><br>
                     <b>Kunci Pergeseran (Shift k):</b> <code>{res_data.get('caesar_shift', 3)}</code><br>
@@ -206,7 +206,7 @@ def render_super_page():
             st.markdown(f"""
             <div class="datain-card" style="margin-bottom: 1rem;">
                 <span class="badge-category">Tahap 2</span>
-                <span class="badge-pic">Penanggung Jawab: Orang 2</span>
+                <span class="badge-pic">Penanggung Jawab: Mirwan Qolyubi (123240016)</span>
                 <p style="margin: 8px 0 4px 0; color: #1E3A5F; font-size: 0.95rem; line-height: 1.6;">
                     <b>Input (Output dari Caesar):</b> <code>{res_data.get('caesar_out', '')}</code><br>
                     <b>Kata Kunci Vigenère:</b> <code>{res_data.get('vigenere_key', '')}</code><br>
@@ -226,7 +226,7 @@ def render_super_page():
             st.markdown(f"""
             <div class="datain-card" style="margin-bottom: 1rem;">
                 <span class="badge-category">Tahap 3</span>
-                <span class="badge-pic">Penanggung Jawab: Orang 4 (Oktavian Prasetya Adi)</span>
+                <span class="badge-pic">Penanggung Jawab: Oktavian Prasetya Adi (123240135)</span>
                 <p style="margin: 8px 0 4px 0; color: #1E3A5F; font-size: 0.95rem; line-height: 1.6;">
                     <b>Input (Output dari Vigenère):</b> <code>{res_data.get('vigenere_out', '')}</code><br>
                     <b>Kunci Keystream Vernam:</b> <code>{res_data.get('vernam_key', '')}</code><br>
@@ -246,7 +246,7 @@ def render_super_page():
             st.markdown(f"""
             <div class="datain-card" style="margin-bottom: 1rem;">
                 <span class="badge-category">Tahap 4</span>
-                <span class="badge-pic">Penanggung Jawab: Orang 3 (Adha)</span>
+                <span class="badge-pic">Penanggung Jawab: Adhafa Joan Putranto (123240069)</span>
                 <p style="margin: 8px 0 4px 0; color: #1E3A5F; font-size: 0.95rem; line-height: 1.6;">
                     <b>Input (Heksadesimal dari Vernam):</b> <code>{res_data.get('vernam_hex', '')}</code><br>
                     <b>Kunci Rahasia AES-128:</b> <code>{res_data.get('aes_key', '')}</code> (Expanded ke 10 Putaran)<br>
@@ -270,27 +270,48 @@ def render_super_page():
             st.markdown(f'<div class="cipher-box" style="font-size: 0.85rem;">{res_data.get("aes_b64", "")}</div>', unsafe_allow_html=True)
 
     with tab_theory:
-        st.markdown("##### Konsep Super Enkripsi Terpadu")
+        st.markdown("##### Teori Super Enkripsi")
         st.markdown(r"""
-        **Super Enkripsi** menggabungkan beberapa algoritma kriptografi secara beruntun (*pipelining*).
-        Secara matematis, ini membentuk sebuah **Fungsi Komposisi**:
+        **Super Enkripsi** adalah metode enkripsi yang menggunakan lebih dari satu algoritma kriptografi secara berurutan, sehingga hasil enkripsi dari satu algoritma menjadi input bagi algoritma berikutnya.
 
-        $$E_{super}(P) = E_{aes}(E_{vernam}(E_{vig}(E_{caesar}(P))))$$
+        Pada aplikasi **Kelompok 3** ini digunakan urutan pipeline 4 tahap:
+        $$\mathbf{\text{Caesar Cipher}} \longrightarrow \mathbf{\text{Vigenère Cipher}} \longrightarrow \mathbf{\text{Vernam Cipher}} \longrightarrow \mathbf{\text{AES-128}}$$
 
-        * **Kombinasi Algoritma:**
-          1. **Tahap 1 (Caesar Cipher):** Kriptografi Klasik (Aritmetika Modulo 26).
-          2. **Tahap 2 (Vigenère Cipher):** Kriptografi Klasik (Substitusi Polialfabetik).
-          3. **Tahap 3 (Vernam Stream Cipher):** Kriptografi Modern (Cipher Aliran Bitwise XOR Keystream).
-          4. **Tahap 4 (AES-128 Rijndael):** Kriptografi Modern (Cipher Blok Matriks Galois Field $GF(2^8)$).
+        ---
 
-        * **Prinsip Dekripsi (LIFO - Teorema Invers Komposisi)**:
-          Berdasarkan aturan invers fungsi komposisi $(f \circ g)^{-1} = g^{-1} \circ f^{-1}$, proses pembalikan harus dilakukan dengan urutan terbalik secara presisi:
-          $$\text{Super Cipherteks} \xrightarrow{\text{AES}^{-1}} C_3 \xrightarrow{\text{Vernam}^{-1}} C_2 \xrightarrow{\text{Vigenère}^{-1}} C_1 \xrightarrow{\text{Caesar}^{-1}} \text{Plainteks}$$
+        ##### Karakteristik Utama:
+        1. **Eksekusi Berurutan**: Menggunakan beberapa algoritma kriptografi secara berantai (*pipelining*).
+        2. **Input-Output Terhubung**: Hasil keluaran (*ciphertext*) dari algoritma sebelumnya menjadi masukan (*plaintext*) bagi algoritma berikutnya.
+        3. **Kombinasi Klasik & Modern**: Menggabungkan algoritma klasik (substitusi monoalfabetik & polialfabetik) dengan algoritma modern (cipher aliran bitwise XOR & cipher blok SPN).
+        4. **Prinsip Dekripsi Terbalik (LIFO)**: Proses dekripsi wajib dilakukan dengan urutan kebalikan (*reverse order*) secara mutlak.
+        5. **Final Ciphertext Komposit**: Menghasilkan cipherteks tingkat tinggi setelah melewati seluruh tahap transformasi.
+
+        ---
+
+        ##### Formula Matematis Enkripsi:
+        $$\begin{aligned}
+        C_1 &= \text{Caesar}(P) \\
+        C_2 &= \text{Vigenère}(C_1) \\
+        C_3 &= \text{Vernam}(C_2, K_{vernam}) \\
+        C_4 &= \text{AES}(C_3, K_{aes}) \\
+        \mathbf{\text{Final Ciphertext}} &= \mathbf{\text{AES}(\text{Vernam}(\text{Vigenère}(\text{Caesar}(P))))}
+        \end{aligned}$$
+
+        ---
+
+        ##### Formula Matematis Dekripsi (Urutan Terbalik):
+        $$\begin{aligned}
+        C_3 &= \text{AES}^{-1}(C_4) \\
+        C_2 &= \text{Vernam}^{-1}(C_3) \\
+        C_1 &= \text{Vigenère}^{-1}(C_2) \\
+        P &= \text{Caesar}^{-1}(C_1) \\
+        \mathbf{\text{Plainteks Asli}} &= \mathbf{\text{Caesar}^{-1}(\text{Vigenère}^{-1}(\text{Vernam}^{-1}(\text{AES}^{-1}(\text{Ciphertext}))))}
+        \end{aligned}$$
         """)
 
 
 # Standalone runner
 if __name__ == "__main__":
-    st.set_page_config(page_title="Super Enkripsi", layout="wide")
+    st.set_page_config(page_title="Super Enkripsi - Kelompok 3", layout="wide")
     load_global_css()
     render_super_page()

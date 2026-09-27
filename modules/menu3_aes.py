@@ -252,8 +252,8 @@ def render_aes_page():
     render_header(
         title="Menu 4: AES-128 Block Cipher",
         subtitle="Standar Enkripsi Blok 128-bit (Implementasi Operasi Matriks Murni dengan NumPy)",
-        pic_name="Penanggung Jawab: Orang 3",
-        category="Kriptografi Modern - Cipher Blok"
+        pic_name="Penanggung Jawab: Adhafa Joan Putranto (123240069)",
+        category="Kriptografi Modern - Cipher Blok • Kelompok 3"
     )
 
     tab_main, tab_trace, tab_theory = st.tabs([
@@ -269,8 +269,8 @@ def render_aes_page():
             col1, col2 = st.columns([1, 1])
             with col1:
                 st.markdown("##### Input Plainteks & Parameter Kunci")
-                p_aes = st.text_area("Masukkan teks plainteks:", value="BELAJAR KRIPTOGRAFI MODERN", height=110, key="aes_plain_in")
-                k_aes = st.text_input("Kunci Rahasia AES (Otomatis di-pad ke 128-bit):", value="KunciSuperAman12", key="aes_key_in")
+                p_aes = st.text_area("Masukkan teks plainteks:", value="HELLO WORLD", height=110, key="aes_plain_in")
+                k_aes = st.text_input("Kunci Rahasia AES (Otomatis di-pad ke 128-bit):", value="mysecretkey12345", key="aes_key_in")
                 mode_opt = st.selectbox("Mode Operasi Blok:", ["CBC", "ECB"], key="aes_mode_in")
                 btn_aes_enc = st.button("Jalankan Enkripsi AES-128", key="aes_btn_enc", use_container_width=True, type="primary")
             with col2:
@@ -294,7 +294,7 @@ def render_aes_page():
                         st.session_state["aes_dec_in"] = st.session_state["aes_last_hex"]
                         st.rerun()
                 c_aes_in = st.text_area("Masukkan teks cipherteks (Heksadesimal):", value=st.session_state.get("aes_dec_in", ""), height=110, key="aes_dec_in")
-                k_aes_dec = st.text_input("Kunci Rahasia AES:", value="KunciSuperAman12", key="aes_key_dec")
+                k_aes_dec = st.text_input("Kunci Rahasia AES:", value="mysecretkey12345", key="aes_key_dec")
                 mode_opt_dec = st.selectbox("Mode Operasi Blok:", ["CBC", "ECB"], key="aes_mode_dec_in")
                 btn_aes_dec = st.button("Jalankan Dekripsi AES-128", key="aes_btn_dec", use_container_width=True, type="primary")
             with col2:
@@ -408,21 +408,46 @@ def render_aes_page():
             st.info("Lakukan proses enkripsi terlebih dahulu untuk memuat visualisasi State Matrix.")
 
     with tab_theory:
-        st.markdown("##### Teori Implementasi Matematis & Aljabar Linier (NumPy)")
+        st.markdown("##### Teori & Karakteristik AES")
         st.markdown("""
-        Implementasi ini dibangun secara **matematis murni dari nol** tanpa menggunakan *library* kriptografi siap pakai. Menggunakan arsitektur matriks 2D NumPy, algoritma ini menirukan persis operasi matematika standar FIPS-197:
+        **AES (Advanced Encryption Standard)** adalah algoritma kriptografi simetris modern yang digunakan untuk mengamankan data dengan mengenkripsi data dalam blok berukuran 128-bit.
 
-        1. **SubBytes (Pemetaan Matriks $1 \\to 1$)**: 
-           Matriks `state` langsung dipetakan (*mapping*) ke dalam array S-Box menggunakan operasi indeks vektorisasi: `state = SBOX[state]`.
-        2. **ShiftRows (Rotasi Siklis Baris)**: 
-           Menggunakan operasi pergeseran array sirkuler matematis: `np.roll(baris, -i)`.
-        3. **MixColumns (Perkalian Matriks *Galois Field*)**: 
-           Ini adalah bentuk murni dari *Dot Product* matriks. Matriks FIPS standar $M$ dikalikan dengan matriks *State* menggunakan operasi aritmetika polinomial $GF(2^8)$.
-        4. **AddRoundKey (Penjumlahan Modulo 2 / Matriks XOR)**: 
-           Matriks Kunci ditambahkan (XOR bitwise paralel) langsung ke matriks *State*: `state ^ key`.
+        ---
+
+        ##### Karakteristik Utama:
+        1. **Kriptografi Simetris**: Menggunakan kunci rahasia yang sama untuk enkripsi dan dekripsi.
+        2. **Ukuran Blok Tetap (128-bit)**: Memproses data per 16 byte (128 bit) sekaligus.
+        3. **Variasi Kunci**: Mendukung panjang kunci 128-bit (10 putaran), 192-bit (12 putaran), dan 256-bit (14 putaran).
+        4. **4 Transformasi Fundamental Round**: SubBytes, ShiftRows, MixColumns, dan AddRoundKey.
+
+        ---
+
+        ##### Alur Proses Enkripsi AES-128:
+        $$\\text{Plainteks} \\to \\text{AddRoundKey} \\to [\\text{SubBytes} \\to \\text{ShiftRows} \\to \\text{MixColumns} \\to \\text{AddRoundKey}] \\times 9 \\to \\text{SubBytes} \\to \\text{ShiftRows} \\to \\text{AddRoundKey} \\to \\text{Cipherteks}$$
+
+        * **SubBytes**: Mengganti setiap byte menggunakan tabel non-linier S-Box.
+        * **ShiftRows**: Menggeser posisi byte secara siklis ke kiri pada setiap baris (Baris 0 geser 0, Baris 1 geser 1, dst.).
+        * **MixColumns**: Mengalikan kolom State Matrix dengan polinomial konstan dalam Galois Field $GF(2^8)$.
+        * **AddRoundKey**: Melakukan operasi bitwise XOR antara State Matrix dengan Round Key putaran terkait.
+        * **State Matrix 4×4**: Blok data 128-bit disusun menjadi matriks 4 baris $\\times$ 4 kolom byte heksadesimal.
+        * **Key Expansion**: Kunci rahasia 128-bit diekspansi menjadi 11 buah Round Keys (Round 0 s/d 10) menggunakan *Key Schedule*.
+
+        ---
+
+        ##### Alur Proses Dekripsi AES-128 (Pembalikan):
+        $$\\text{Cipherteks} \\to \\text{AddRoundKey (K10)} \\to [\\text{InvShiftRows} \\to \\text{InvSubBytes} \\to \\text{AddRoundKey} \\to \\text{InvMixColumns}] \\times 9 \\to \\text{InvShiftRows} \\to \\text{InvSubBytes} \\to \\text{AddRoundKey (K0)} \\to \\text{Plainteks}$$
+
+        > 📌 **Catatan Khusus**: Pada putaran terakhir (*final round*), proses **InvMixColumns dilewati** (tidak dijalankan).
+
+        ---
+
+        ##### Contoh Implementasi:
+        * **Plainteks**: `HELLO WORLD` (11 byte $\\to$ memerlukan padding PKCS#7 agar genap 16 byte)
+        * **Kunci**: `mysecretkey12345` (16 karakter = 128 bit)
+        * **Cipherteks Output**: Ditampilkan dalam representasi Heksadesimal (misal: `7F3A9C2E8B...`) atau Base64.
         """)
 
 if __name__ == "__main__":
-    st.set_page_config(page_title="AES-128 - Orang 3", layout="wide")
+    st.set_page_config(page_title="AES-128 - Adhafa Joan Putranto", layout="wide")
     load_global_css()
     render_aes_page()

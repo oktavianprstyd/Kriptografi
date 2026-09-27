@@ -11,7 +11,7 @@ from modules.menu5_super import render_super_page
 # Konfigurasi Halaman Utama
 st.set_page_config(
     page_title="Aplikasi Kriptografi - UPN Veteran Yogyakarta",
-    page_icon="https://upload.wikimedia.org/wikipedia/id/c/c9/Logo_UPN_Veteran_Yogyakarta.png",
+    page_icon="https://www.old.upnyk.ac.id/asset/images/logo_upn.png",
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -23,10 +23,10 @@ load_global_css()
 # SIDEBAR NAVIGASI (BERSIH, TANPA EMOJI, & INTERAKTIF)
 # ==============================================================================
 with st.sidebar:
-    st.image("https://upload.wikimedia.org/wikipedia/id/c/c9/Logo_UPN_Veteran_Yogyakarta.png", width=75)
+    st.image("https://www.old.upnyk.ac.id/asset/images/logo_upn.png", width=75)
     st.markdown("### UPN Veteran Yogyakarta")
     st.markdown("**Program Studi Informatika**")
-    st.caption("Tugas Mata Kuliah Kriptografi")
+    st.caption("Tugas Mata Kuliah Kriptografi • Kelompok 3")
     st.divider()
 
     menu = st.radio(
@@ -49,9 +49,21 @@ if menu == "Beranda: Ikhtisar Algoritma":
     st.markdown('<div class="menu-title">Ikhtisar Algoritma Kriptografi</div>', unsafe_allow_html=True)
     st.markdown(
         '<div class="menu-desc">Platform Terpadu Pengujian dan Analisis Matematis Kriptografi Klasik, '
-        'Modern, dan Super Enkripsi Pipeline.</div>',
+        'Modern, dan Super Enkripsi Pipeline • Kelompok 3.</div>',
         unsafe_allow_html=True
     )
+
+    # Latar Belakang Proyek
+    st.markdown("""
+    <div class="datain-card" style="margin-bottom: 1.5rem;">
+        <span class="badge-category">Latar Belakang Proyek</span>
+        <span class="badge-pic">Kelompok 3 • Kelas Informatika H</span>
+        <h4 style="margin-top: 8px; color: #1E3A5F; font-family: 'Outfit';">Pemenuhan Tugas Mata Kuliah Kriptografi</h4>
+        <p style="color: #1E3A5F; font-size: 0.95rem; line-height: 1.6; margin-bottom: 0;">
+            Sebagai bentuk pemenuhan tugas mata kuliah Kriptografi, kelompok kami membuat aplikasi enkripsi-dekripsi berbasis Streamlit yang mengimplementasikan 4 algoritma yaitu: <b>Caesar Cipher</b> dan <b>Vigenère Cipher</b>, <b>Vernam Cipher</b> dan <b>AES</b>, sekaligus fitur <b>Super Enkripsi</b> yang menggabungkan keempatnya. Aplikasi ini juga menampilkan visualisasi proses enkripsi dan dekripsi secara step-by-step untuk membantu pemahaman cara kerja tiap algoritma.
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
 
     # 4 Kotak Kartu Algoritma (Grid 2x2)
     c1, c2 = st.columns(2)
@@ -170,26 +182,26 @@ elif menu == "Menu 5: Super Enkripsi":
 elif menu == "Informasi Tim & Kontributor":
     st.markdown('<div class="menu-title">Informasi Tim Pengembang</div>', unsafe_allow_html=True)
     st.markdown(
-        '<div class="menu-desc">Tugas Besar Mata Kuliah Kriptografi • Kelas Informatika H • '
+        '<div class="menu-desc">Tugas Besar Mata Kuliah Kriptografi • Kelompok 3 • Kelas Informatika H • '
         'Universitas Pembangunan Nasional "Veteran" Yogyakarta.</div>',
         unsafe_allow_html=True
     )
 
     # Inisialisasi default profil anggota di session state jika belum ada
     if "member_1_name" not in st.session_state:
-        st.session_state["member_1_name"] = "Mahasiswa 1"
-        st.session_state["member_1_nim"] = "123220001"
+        st.session_state["member_1_name"] = "Grace Rianty Butar Butar"
+        st.session_state["member_1_nim"] = "123240036"
     if "member_2_name" not in st.session_state:
-        st.session_state["member_2_name"] = "Mahasiswa 2"
-        st.session_state["member_2_nim"] = "123220002"
+        st.session_state["member_2_name"] = "Mirwan Qolyubi"
+        st.session_state["member_2_nim"] = "123240116"
     if "member_3_name" not in st.session_state:
-        st.session_state["member_3_name"] = "Mahasiswa 3"
-        st.session_state["member_3_nim"] = "123220003"
+        st.session_state["member_3_name"] = "Adhafa Joan Putranto"
+        st.session_state["member_3_nim"] = "123240069"
     if "member_4_name" not in st.session_state:
         st.session_state["member_4_name"] = "Oktavian Prasetya Adi"
-        st.session_state["member_4_nim"] = "123220004"
+        st.session_state["member_4_nim"] = "123240135"
     if "team_class" not in st.session_state:
-        st.session_state["team_class"] = "Informatika - Kelas H"
+        st.session_state["team_class"] = "Kelompok 3 • Informatika - Kelas H"
 
     # Kartu Profil 4 Anggota Tim (Grid 2x2)
     t1, t2 = st.columns(2)

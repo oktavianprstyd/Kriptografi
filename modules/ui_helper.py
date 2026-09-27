@@ -1,5 +1,6 @@
 import streamlit as st
 
+
 def load_global_css():
     """
     Menyuntikkan sistem desain terpadu bergaya DataIn (Warm Cream & Deep Navy).
@@ -12,7 +13,8 @@ def load_global_css():
       - Container Warm Dark: #F4F0EA
       - Border Taupe: #D8CFC4
     """
-    st.markdown("""
+    st.markdown(
+        """
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
@@ -278,7 +280,10 @@ def load_global_css():
             background-color: #FFFFFF;
         }
     </style>
-    """, unsafe_allow_html=True)
+    """,
+        unsafe_allow_html=True,
+    )
+
 
 def render_header(title: str, subtitle: str, pic_name: str, category: str):
     """
@@ -288,12 +293,20 @@ def render_header(title: str, subtitle: str, pic_name: str, category: str):
     st.markdown(
         f'<span class="badge-category">{category}</span> '
         f'<span class="badge-pic">{pic_name}</span>',
-        unsafe_allow_html=True
+        unsafe_allow_html=True,
     )
-    st.markdown(f'<div class="menu-desc" style="margin-top: 0.5rem;">{subtitle}</div>', unsafe_allow_html=True)
+    st.markdown(
+        f'<div class="menu-desc" style="margin-top: 0.5rem;">{subtitle}</div>',
+        unsafe_allow_html=True,
+    )
 
 
-def render_mode_selector(session_state_key: str, key_prefix: str, label_enc: str = "Enkripsi Pesan", label_dec: str = "Dekripsi Pesan") -> str:
+def render_mode_selector(
+    session_state_key: str,
+    key_prefix: str,
+    label_enc: str = "Enkripsi Pesan",
+    label_dec: str = "Dekripsi Pesan",
+) -> str:
     """
     Komponen Pemilih Mode Operasi (Enkripsi Pesan / Dekripsi Pesan) bergaya DataIn:
     - Default selalu mode Enkripsi.
@@ -302,13 +315,19 @@ def render_mode_selector(session_state_key: str, key_prefix: str, label_enc: str
     - Mode yang tidak dipilih saat di-hover kursor mouse: Baru berubah warna jadi biru navy.
     - Tanpa emotikon centang.
     """
-    if session_state_key not in st.session_state or not st.session_state[session_state_key]:
+    if (
+        session_state_key not in st.session_state
+        or not st.session_state[session_state_key]
+    ):
         st.session_state[session_state_key] = label_enc
 
     current_mode = st.session_state[session_state_key]
-    is_enc = (current_mode == label_enc)
+    is_enc = current_mode == label_enc
 
-    st.markdown("<p style='font-size: 0.88rem; font-weight: 600; color: #1E3A5F; margin-bottom: 8px;'>Pilih Mode Operasi:</p>", unsafe_allow_html=True)
+    st.markdown(
+        "<p style='font-size: 0.88rem; font-weight: 600; color: #1E3A5F; margin-bottom: 8px;'>Pilih Mode Operasi:</p>",
+        unsafe_allow_html=True,
+    )
     c_m1, c_m2, _ = st.columns([1.2, 1.2, 2.6])
 
     with c_m1:
@@ -316,7 +335,7 @@ def render_mode_selector(session_state_key: str, key_prefix: str, label_enc: str
             label_enc,
             key=f"mode_btn_{key_prefix}_enc",
             type="primary" if is_enc else "secondary",
-            use_container_width=True
+            use_container_width=True,
         ):
             st.session_state[session_state_key] = label_enc
             st.rerun()
@@ -326,11 +345,10 @@ def render_mode_selector(session_state_key: str, key_prefix: str, label_enc: str
             label_dec,
             key=f"mode_btn_{key_prefix}_dec",
             type="primary" if not is_enc else "secondary",
-            use_container_width=True
+            use_container_width=True,
         ):
             st.session_state[session_state_key] = label_dec
             st.rerun()
 
     st.divider()
     return st.session_state[session_state_key]
-
