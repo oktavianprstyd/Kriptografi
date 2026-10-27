@@ -147,6 +147,8 @@ def render_vigenere_page():
                 if btn_v_enc:
                     c_vig, steps_v = vigenere_encrypt(p_vig, k_vig)
                     st.session_state["v_steps"] = steps_v
+                    st.session_state["v_last_cipher"] = c_vig
+                    st.session_state["v_trace_mode"] = "Enkripsi"
                     st.text_area("Teks Cipherteks:", value=c_vig, height=110)
                     st.success("Proses enkripsi Vigenère selesai diproses.")
                 else:
@@ -158,8 +160,12 @@ def render_vigenere_page():
             col1, col2 = st.columns([1, 1])
             with col1:
                 st.markdown("##### Input Cipherteks & Kata Kunci")
+                if st.session_state.get("v_last_cipher"):
+                    if st.button("Salin Cipherteks dari Hasil Enkripsi", key="v_btn_sync_enc"):
+                        st.session_state["v_cipher_in"] = st.session_state["v_last_cipher"]
+                        st.rerun()
                 c_vig_in = st.text_area(
-                    "Masukkan teks cipherteks:", value="", height=110, key="v_cipher_in"
+                    "Masukkan teks cipherteks:", value=st.session_state.get("v_cipher_in", ""), height=110, key="v_cipher_in"
                 )
                 k_vig_dec = st.text_input(
                     "Kata Kunci (Huruf Alfabet):", value="KUNCI", key="v_key_dec"
@@ -173,7 +179,9 @@ def render_vigenere_page():
             with col2:
                 st.markdown("##### Hasil Dekripsi")
                 if btn_v_dec:
-                    p_rec, _ = vigenere_decrypt(c_vig_in, k_vig_dec)
+                    p_rec, steps_v_dec = vigenere_decrypt(c_vig_in, k_vig_dec)
+                    st.session_state["v_steps"] = steps_v_dec
+                    st.session_state["v_trace_mode"] = "Dekripsi"
                     st.text_area(
                         "Teks Plainteks Rekonstruksi:", value=p_rec, height=110
                     )
@@ -184,10 +192,13 @@ def render_vigenere_page():
                     )
 
     with tab_trace:
-        st.markdown("##### Pelacakan Transformasi Per Karakter dan Kunci")
+        trace_mode = st.session_state.get("v_trace_mode", "Enkripsi")
+        st.markdown(f"##### Pelacakan Transformasi Per Karakter dan Kunci (Mode {trace_mode})")
         if "v_steps" in st.session_state and st.session_state["v_steps"]:
             st.dataframe(
-                pd.DataFrame(st.session_state["v_steps"]), use_container_width=True
+                pd.DataFrame(st.session_state["v_steps"]),
+                use_container_width=True,
+                hide_index=True
             )
         else:
             st.info(

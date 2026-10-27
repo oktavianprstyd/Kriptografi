@@ -297,6 +297,7 @@ def render_vernam_page():
                         st.session_state["vernam_steps"] = steps_res
                         st.session_state["vernam_hex_dec_in"] = hex_res
                         st.session_state["vernam_dec_key_in"] = key_val
+                        st.session_state["vernam_active_trace"] = "Enkripsi"
 
                         st.markdown("**Cipherteks Format Heksadesimal (Standar Industri):**")
                         st.markdown(f'<div class="cipher-box">{hex_res}</div>', unsafe_allow_html=True)
@@ -353,40 +354,70 @@ def render_vernam_page():
                     try:
                         recovered_msg, dec_steps = vernam_decrypt(dec_hex_input, dec_key, mode="repeat")
                         st.session_state["vernam_dec_steps"] = dec_steps
+                        st.session_state["vernam_active_trace"] = "Dekripsi"
 
-                        st.markdown("**Plainteks Rekonstruksi:**")
+                        bin_rec_str = " ".join(s.get("Biner Plain (P)", "") for s in dec_steps)
+                        st.session_state["vernam_last_rec_text"] = recovered_msg
+                        st.session_state["vernam_last_rec_bin"] = bin_rec_str
+
+                        st.markdown("**Plainteks Rekonstruksi (Teks):**")
                         st.markdown(f'<div class="cipher-box" style="font-weight: 600; font-size: 1.05rem;">{recovered_msg}</div>', unsafe_allow_html=True)
 
-                        st.markdown("""
-                        <div class="datain-card" style="margin-top: 1rem; padding: 0.85rem;">
-                            <span class="badge-category">Sifat Involutori XOR Terpenuhi</span>
-                            <p style="margin: 6px 0 0 0; color: #1E3A5F; font-size: 0.9rem;">
-                                Karena <code>(P ⊕ K) ⊕ K = P</code>, operasi XOR kedua dengan kunci yang sama 
-                                langsung memulihkan data asli secara sempurna.
-                            </p>
-                        </div>
-                        """, unsafe_allow_html=True)
+                        st.markdown("**Aliran Bit Biner Plainteks Pulih:**")
+                        st.markdown(f'<div class="cipher-box" style="font-size: 0.82rem;">{bin_rec_str}</div>', unsafe_allow_html=True)
+
+                        st.info("Sifat Involutori XOR Terpenuhi: Karena (P ⊕ K) ⊕ K = P, bit biner dan teks asli langsung pulih secara utuh.")
                         st.success("Dekripsi berhasil dipulihkan secara 100% presisi!")
                     except Exception as err:
                         st.error(f"Gagal memproses dekripsi: {err}")
                 else:
-                    st.info("Tekan tombol 'Jalankan Dekripsi Vernam' untuk memulihkan teks asli.")
+                    if st.session_state.get("vernam_last_rec_text"):
+                        st.markdown("**Plainteks Rekonstruksi (Teks):**")
+                        st.markdown(f'<div class="cipher-box" style="font-weight: 600; font-size: 1.05rem;">{st.session_state["vernam_last_rec_text"]}</div>', unsafe_allow_html=True)
+                        if st.session_state.get("vernam_last_rec_bin"):
+                            st.markdown("**Aliran Bit Biner Plainteks Pulih:**")
+                            st.markdown(f'<div class="cipher-box" style="font-size: 0.82rem;">{st.session_state["vernam_last_rec_bin"]}</div>', unsafe_allow_html=True)
+                    else:
+                        st.info("Tekan tombol 'Jalankan Dekripsi Vernam' untuk memulihkan teks asli.")
 
     # --------------------------------------------------------------------------
     # TAB 2: PELACAKAN BITWISE XOR STEP-BY-STEP
     # --------------------------------------------------------------------------
     with tab_trace:
-        st.markdown("##### Tabel Pelacakan Bitwise XOR per Karakter (p_i ⊕ k_i = c_i)")
-        st.markdown(
-            "Tabel di bawah memperlihatkan proses bit-per-bit konversi kode ASCII setiap karakter ke representasi biner 8-bit, "
-            "kemudian dilakukan operasi logika **XOR bitwise** dengan bit kunci keystream:"
-        )
+        st.markdown("##### Tabel Pelacakan Bitwise XOR per Karakter")
+        has_enc = bool(st.session_state.get("vernam_steps"))
+        has_dec = bool(st.session_state.get("vernam_dec_steps"))
 
-        if st.session_state.get("vernam_steps"):
-            df_trace = pd.DataFrame(st.session_state["vernam_steps"])
-            st.dataframe(df_trace, width="stretch", hide_index=True)
+        if not has_enc and not has_dec:
+            st.info("Lakukan proses enkripsi atau dekripsi di Tab 1 untuk memuat rincian tabel pelacakan bitwise XOR.")
         else:
-            st.info("Lakukan proses enkripsi di Tab 1 untuk memuat rincian tabel pelacakan bitwise XOR.")
+            options = []
+            if has_enc:
+                options.append("Pelacakan Enkripsi (P ⊕ K = C)")
+            if has_dec:
+                options.append("Pelacakan Dekripsi (C ⊕ K = P)")
+
+            active_mode = st.session_state.get("vernam_active_trace", "Enkripsi")
+            default_ix = 0
+            if active_mode == "Dekripsi" and "Pelacakan Dekripsi (C ⊕ K = P)" in options:
+                default_ix = options.index("Pelacakan Dekripsi (C ⊕ K = P)")
+
+            selected_trace = st.radio(
+                "Pilih Tampilan Data Pelacakan:",
+                options,
+                index=default_ix,
+                horizontal=True,
+                key="v_trace_view_sel"
+            )
+
+            if "Enkripsi" in selected_trace:
+                st.caption("Pelacakan Enkripsi: konversi kode ASCII karakter plainteks ke biner 8-bit, lalu di-XOR dengan bit kunci keystream (p_i ⊕ k_i = c_i):")
+                df_trace = pd.DataFrame(st.session_state["vernam_steps"])
+                st.dataframe(df_trace, use_container_width=True, hide_index=True)
+            else:
+                st.caption("Pelacakan Dekripsi: cipherteks di-XOR kembali dengan keystream yang sama (c_i ⊕ k_i = p_i) untuk memulihkan karakter plainteks asli:")
+                df_trace = pd.DataFrame(st.session_state["vernam_dec_steps"])
+                st.dataframe(df_trace, use_container_width=True, hide_index=True)
 
     # --------------------------------------------------------------------------
     # TAB 3: SIMULASI ALIRAN BIT MURNI
